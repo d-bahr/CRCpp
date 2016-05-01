@@ -24,6 +24,8 @@ Many common CRCs are provided out-of-the-box, such as CRC-32 and CRC-CCITT.
 
 CRC++ consists of a single header file which can be included in any existing C++ application. No libraries, no boost, no mess, no fuss.
 
-CRC++ only includes one header file, <cstdint>, but it can be configured to compile with no include files at all.
+CRC++ only includes one header file, cstdint, but it can be configured to compile with no include files at all.
 
 CRC++ will compile with any reasonably compliant C++11 compiler.
+
+CRC++ is free to use and provided under a BSD license.
