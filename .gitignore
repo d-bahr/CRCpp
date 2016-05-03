@@ -26,3 +26,16 @@
 *.exe
 *.out
 *.app
+
+# Custom
+*.pdb
+*.tlog
+*.opendb
+*.suo
+*.sdf
+
+# Directories
+doxygen/
+!doxygen/Doxyfile.dox
+**/Debug/
+**/Release/
