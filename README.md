@@ -9,7 +9,7 @@ CRC++ supports bit-by-bit and byte-by-byte calculation of full and multipart CRC
 
 CRC++ consists of a single header file which can be included in any existing C++ application. No libraries, no boost, no mess, no fuss.
 
-Any CRC width is supported -- even CRCs larger than 64 bits, provided there is an integer type large enough to contain it. Trying to compute a 57-bit CRC? Got you covered.
+Any CRC width is supported - even CRCs larger than 64 bits, provided there is an integer type large enough to contain it. Trying to compute a 57-bit CRC? Got you covered.
 
 Many common CRCs are provided out-of-the-box, such as CRC-32 (used in PKZip and Ethernet), CRC-XMODEM, and CRC-CCITT.
 
@@ -124,9 +124,9 @@ Specifies the type used to store CRCs that have a width between 33 and 64 bits (
 Define to place all CRC++ code within the ::CRCPP namespace. Not defined by default.
 * `#define CRCPP_BRANCHLESS`<br>
 Define to enable a branchless CRC implementation. The branchless implementation uses a single integer multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation may be faster on processor architectures which support single-instruction integer multiplication. Not defined by default.
-* `#define CRCPP_USE_CPP11
+* `#define CRCPP_USE_CPP11`
 Define to enables C++11 features (move semantics, constexpr, static_assert, etc.). Not defined by default.
-* `#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
+* `#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS`
 Define to include definitions for little-used CRCs. Not defined by default.
 
 ### License
