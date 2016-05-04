@@ -9,19 +9,19 @@ CRC++ supports bit-by-bit and byte-by-byte calculation of full and multipart CRC
 
 CRC++ consists of a single header file which can be included in any existing C++ application. No libraries, no boost, no mess, no fuss.
 
-Any CRC width is supported, provided there is an integer type large enough to contain it. Trying to compute a 57-bit CRC? Got you covered.
+Any CRC width is supported -- even CRCs larger than 64 bits, provided there is an integer type large enough to contain it. Trying to compute a 57-bit CRC? Got you covered.
 
 Many common CRCs are provided out-of-the-box, such as CRC-32 (used in PKZip and Ethernet), CRC-XMODEM, and CRC-CCITT.
 
-CRC++ will compile with any reasonably compliant C++11 compiler. CRC++ will not compile with C++03.
+CRC++ will compile with any reasonably compliant C++03 or C++11 compiler. Compiling with C++11 is recommended, as it allows a number of static computations to be performed at compile-time instead of runtime.
 
-All of the CRC++ code is well-documented. Unit tests are included in the repository. HTML documentation can also be produced via Doxygen (also included in the repository).
+All of the CRC++ code is well-documented. Unit tests are included in the repository (g++ Makefile and Visual Studio 2015 projects included). HTML documentation can also be produced via Doxygen (also included in the repository).
 
 ### Usage
 
 Computing a CRC is as simple as the following code:
 
-```
+```cpp
 #include "CRC.h" // Only need to include this header file!
                  // No libraries need to be included. No project settings need to be messed with.
 				 
@@ -33,7 +33,7 @@ int main(int argc, char ** argv)
 {
 	const char myString[] = { 'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D' };
 	
-	std::uint32_t crc = CRC::Calculate(myString, sizeof(myString), CRC::CRC_32);
+	std::uint32_t crc = CRC::Calculate(myString, sizeof(myString), CRC::CRC_32());
 	
 	std::cout << std::hex << crc;
 	
@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
 
 Multi-part CRCs are also supported:
 
-```
+```cpp
 int main(int argc, char ** argv)
 {
 	const char myHelloString[] = { 'H', 'E', 'L', 'L', 'O', ' ' };
@@ -51,8 +51,8 @@ int main(int argc, char ** argv)
 	
 	std::uint32_t crc;
 	
-	crc = CRC::Calculate(myHelloString, sizeof(myHelloString), CRC::CRC_32);
-	crc = CRC::Calculate(myWorldString, sizeof(myWorldString), CRC::CRC_32, crc);
+	crc = CRC::Calculate(myHelloString, sizeof(myHelloString), CRC::CRC_32());
+	crc = CRC::Calculate(myWorldString, sizeof(myWorldString), CRC::CRC_32(), crc);
 	
 	std::cout << std::hex << crc;
 	
@@ -64,13 +64,13 @@ This will return the same CRC as the first example.
 
 Both of the above examples compute a CRC bit-by-bit. However, CRC++ also supports lookup tables, as the following example demonstrates:
 
-```
+```cpp
 int main(int argc, char ** argv)
 {
 	const char myHelloString[] = { 'H', 'E', 'L', 'L', 'O', ' ' };
 	const char myWorldString[] = { 'W', 'O', 'R', 'L', 'D' };
 	
-	CRC::Table<std::uint32_t, 32> table(CRC::CRC_32);
+	CRC::Table<std::uint32_t, 32> table(CRC::CRC_32());
 	
 	std::uint32_t crc;
 	
@@ -85,13 +85,13 @@ int main(int argc, char ** argv)
 
 Or, if you prefer using the `auto` keyword:
 
-```
+```cpp
 int main(int argc, char ** argv)
 {
 	const char myHelloString[] = { 'H', 'E', 'L', 'L', 'O', ' ' };
 	const char myWorldString[] = { 'W', 'O', 'R', 'L', 'D' };
 	
-	auto table = CRC::CRC_32.MakeTable();
+	auto table = CRC::CRC_32().MakeTable();
 	
 	std::uint32_t crc;
 	
@@ -105,6 +105,29 @@ int main(int argc, char ** argv)
 ```
 
 Lookup tables are much faster than computing a CRC bit-by-bit, at the expense of extra memory usage. A lookup table can be reused for as many CRCs as desired until it goes out of scope.
+
+### Configuration
+
+CRC++ can be configured by setting various `#define`s before `#include`-ing the CRC++ header file:
+
+* `#define crcpp_uint8`<br>
+Specifies the type used to store CRCs that have a width of 8 bits or less. This type is not used in CRC calculations. Defaults to ::std::uint8_t.
+* `#define crcpp_uint16`<br>
+Specifies the type used to store CRCs that have a width between 9 and 16 bits (inclusive). This type is not used in CRC calculations. Defaults to ::std::uint16_t.
+* `#define crcpp_uint32`<br>
+Specifies the type used to store CRCs that have a width between 17 and 32 bits (inclusive). This type is not used in CRC calculations. Defaults to ::std::uint32_t.
+* `#define crcpp_uint64`<br>
+Specifies the type used to store CRCs that have a width between 33 and 64 bits (inclusive). This type is not used in CRC calculations. Defaults to ::std::uint64_t.
+* `#define crcpp_size`<br>
+Specifies the type used to store CRCs that have a width between 33 and 64 bits (inclusive). This type is used for loop iteration and function signatures only. Defaults to ::std::size_t.
+* `#define CRCPP_USE_NAMESPACE`<br>
+Define to place all CRC++ code within the ::CRCPP namespace. Not defined by default.
+* `#define CRCPP_BRANCHLESS`<br>
+Define to enable a branchless CRC implementation. The branchless implementation uses a single integer multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation may be faster on processor architectures which support single-instruction integer multiplication. Not defined by default.
+* `#define CRCPP_USE_CPP11
+Define to enables C++11 features (move semantics, constexpr, static_assert, etc.). Not defined by default.
+* `#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
+Define to include definitions for little-used CRCs. Not defined by default.
 
 ### License
 
