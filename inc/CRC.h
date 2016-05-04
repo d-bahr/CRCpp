@@ -46,8 +46,7 @@
                                                           This type is not used in CRC calculations. Defaults to ::std::uint32_t.
         #define crcpp_uint64                            - Specifies the type used to store CRCs that have a width between 33 and 64 bits (inclusive).
                                                           This type is not used in CRC calculations. Defaults to ::std::uint64_t.
-        #define crcpp_size                              - Specifies the type used to store CRCs that have a width between 33 and 64 bits (inclusive).
-                                                          This type is used for loop iteration and function signatures only. Defaults to ::std::size_t.
+        #define crcpp_size                              - This type is used for loop iteration and function signatures only. Defaults to ::std::size_t.
         #define CRCPP_USE_NAMESPACE                     - Define to place all CRC++ code within the ::CRCPP namespace.
         #define CRCPP_BRANCHLESS                        - Define to enable a branchless CRC implementation. The branchless implementation uses a single integer
                                                           multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation
@@ -609,7 +608,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #else
     // Catching this compile-time error is very important. Sadly, the compiler error will be very cryptic, but it's
     // better than nothing.
-    enum { static_assert_failed_CRCType_is_too_small_to_contain_a_CRC_of_width_CRCWidth = 1 / (::std::numeric_limits<CRCType>::digits >= CRCWidth) };
+    enum { static_assert_failed_CRCType_is_too_small_to_contain_a_CRC_of_width_CRCWidth = 1 / (::std::numeric_limits<CRCType>::digits >= CRCWidth ? 1 : 0) };
 #endif
 
     const unsigned char * current = reinterpret_cast<const unsigned char *>(data);
@@ -641,7 +640,10 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     }
     else if (CRCWidth >= CHAR_BIT)
     {
-        static crcpp_constexpr CRCType CRC_HIGHEST_BIT_MASK(CRCType(1) << (CRCWidth - CRCType(1)));
+        static crcpp_constexpr CRCType CRC_WIDTH_MINUS_ONE(CRCWidth - CRCType(1));
+#ifndef CRCPP_BRANCHLESS
+        static crcpp_constexpr CRCType CRC_HIGHEST_BIT_MASK(CRCType(1) << CRC_WIDTH_MINUS_ONE);
+#endif
         static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(CRCWidth - CHAR_BIT));
 
         while (size--)
@@ -657,7 +659,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
                 //     remainder = (remainder << 1) ^ parameters.polynomial;
                 // else
                 //     remainder <<= 1;
-                remainder = (remainder << 1) ^ (((remainder >> WidthMinusOne) & 1) * parameters.polynomial);
+                remainder = (remainder << 1) ^ (((remainder >> CRC_WIDTH_MINUS_ONE) & 1) * parameters.polynomial);
 #else
                 remainder = (remainder & CRC_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ parameters.polynomial) : (remainder << 1);
 #endif
@@ -666,7 +668,10 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     }
     else
     {
-        static crcpp_constexpr CRCType CHAR_BIT_HIGHEST_BIT_MASK(CRCType(1) << (CHAR_BIT - 1));
+        static crcpp_constexpr CRCType CHAR_BIT_MINUS_ONE(CHAR_BIT - 1);
+#ifndef CRCPP_BRANCHLESS
+        static crcpp_constexpr CRCType CHAR_BIT_HIGHEST_BIT_MASK(CRCType(1) << CHAR_BIT_MINUS_ONE);
+#endif
         static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(CHAR_BIT - CRCWidth));
 
         CRCType polynomial = parameters.polynomial << SHIFT;
@@ -685,7 +690,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
                 //     remainder = (remainder << 1) ^ polynomial;
                 // else
                 //     remainder <<= 1;
-                remainder = (remainder << 1) ^ (((remainder >> CharBitMinusOne) & 1) * polynomial);
+                remainder = (remainder << 1) ^ (((remainder >> CHAR_BIT_MINUS_ONE) & 1) * polynomial);
 #else
                 remainder = (remainder & CHAR_BIT_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ polynomial) : (remainder << 1);
 #endif

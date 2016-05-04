@@ -139,7 +139,7 @@ Specifies the type used to store CRCs that have a width between 17 and 32 bits (
 * `#define crcpp_uint64`<br>
 Specifies the type used to store CRCs that have a width between 33 and 64 bits (inclusive). This type is not used in CRC calculations. Defaults to ::std::uint64_t.
 * `#define crcpp_size`<br>
-Specifies the type used to store CRCs that have a width between 33 and 64 bits (inclusive). This type is used for loop iteration and function signatures only. Defaults to ::std::size_t.
+This type is used for loop iteration and function signatures only. Defaults to ::std::size_t.
 * `#define CRCPP_USE_NAMESPACE`<br>
 Define to place all CRC++ code within the ::CRCPP namespace. Not defined by default.
 * `#define CRCPP_BRANCHLESS`<br>
