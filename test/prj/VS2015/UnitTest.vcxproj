@@ -150,7 +150,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\inc\Checksum.h" />
     <ClInclude Include="..\..\..\inc\CRC.h" />
   </ItemGroup>
   <ItemGroup>

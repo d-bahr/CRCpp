@@ -16,9 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\inc\Checksum.h">
-      <Filter>CRC++\inc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\inc\CRC.h">
       <Filter>CRC++\inc</Filter>
     </ClInclude>
