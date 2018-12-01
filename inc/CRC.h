@@ -245,6 +245,7 @@ public:
     static const Parameters<crcpp_uint16, 16> & CRC_16_MODBUS();
     static const Parameters<crcpp_uint16, 16> & CRC_16_T10DIF();
     static const Parameters<crcpp_uint16, 16> & CRC_16_USB();
+    static const Parameters<crcpp_uint16, 16> & CRC_16_CMS();
 #endif
     static const Parameters<crcpp_uint16, 16> & CRC_16_X25();
     static const Parameters<crcpp_uint16, 16> & CRC_16_XMODEM();
@@ -1396,6 +1397,25 @@ inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_USB()
     static const Parameters<crcpp_uint16, 16> parameters = { 0x8005, 0xFFFF, 0xFFFF, true, true };
     return parameters;
 }
+
+/**
+    @brief Returns a set of parameters for CRC-16 CMS.
+    @note The parameters are static and are delayed-constructed to reduce memory footprint.
+    @note CRC-16 CMS has the following parameters and check value:
+        - polynomial     = 0x8005
+        - initial value  = 0xFFFF
+        - final XOR      = 0x0000
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0xAEE7
+    @return CRC-16 CMS parameters
+*/
+inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_CMS()
+{
+    static const Parameters<crcpp_uint16, 16> parameters = { 0x8005, 0xFFFF, 0x0000, false, false };
+    return parameters;
+}
+
 #endif // CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
 
 /**
