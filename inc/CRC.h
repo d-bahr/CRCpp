@@ -299,9 +299,6 @@ private:
 
     template <typename CRCType, crcpp_uint16 CRCWidth>
     static CRCType CalculateRemainder(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable, CRCType remainder);
-
-    template <typename IntegerType>
-    static crcpp_constexpr IntegerType BoundedConstexprValue(IntegerType x);
 };
 
 /**
@@ -396,8 +393,8 @@ inline void CRC::Table<CRCType, CRCWidth>::InitTable()
     static crcpp_constexpr CRCType BIT_MASK((CRCType(1) << (CRCWidth - CRCType(1))) |
                                            ((CRCType(1) << (CRCWidth - CRCType(1))) - CRCType(1)));
 
-	// The conditional expression is used to avoid a -Wshift-count-overflow warning when CHAR_BIT < CRCWidth.
-    static crcpp_constexpr CRCType SHIFT((CRCWidth < CHAR_BIT) ? CRC::BoundedConstexprValue(static_cast<CRCType>(CHAR_BIT - CRCWidth)) : 0);
+    // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+    static crcpp_constexpr CRCType SHIFT((CHAR_BIT >= CRCWidth) ? static_cast<CRCType>(CHAR_BIT - CRCWidth) : 0);
 
     CRCType crc;
     unsigned char byte = 0;
@@ -646,7 +643,8 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #ifndef CRCPP_BRANCHLESS
         static crcpp_constexpr CRCType CRC_HIGHEST_BIT_MASK(CRCType(1) << CRC_WIDTH_MINUS_ONE);
 #endif
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CRCWidth - CHAR_BIT)));
+        // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+        static crcpp_constexpr CRCType SHIFT((CRCWidth >= CHAR_BIT) ? static_cast<CRCType>(CRCWidth - CHAR_BIT) : 0);
 
         while (size--)
         {
@@ -674,7 +672,8 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #ifndef CRCPP_BRANCHLESS
         static crcpp_constexpr CRCType CHAR_BIT_HIGHEST_BIT_MASK(CRCType(1) << CHAR_BIT_MINUS_ONE);
 #endif
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CHAR_BIT - CRCWidth)));
+        // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+        static crcpp_constexpr CRCType SHIFT((CHAR_BIT >= CRCWidth) ? static_cast<CRCType>(CHAR_BIT - CRCWidth) : 0);
 
         CRCType polynomial = static_cast<CRCType>(parameters.polynomial << SHIFT);
         remainder = static_cast<CRCType>(remainder << SHIFT);
@@ -739,7 +738,8 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     }
     else if (CRCWidth >= CHAR_BIT)
     {
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CRCWidth - CHAR_BIT)));
+        // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+        static crcpp_constexpr CRCType SHIFT((CRCWidth >= CHAR_BIT) ? static_cast<CRCType>(CRCWidth - CHAR_BIT) : 0);
 
         while (size--)
         {
@@ -748,7 +748,8 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     }
     else
     {
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CHAR_BIT - CRCWidth)));
+        // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+        static crcpp_constexpr CRCType SHIFT((CHAR_BIT >= CRCWidth) ? static_cast<CRCType>(CHAR_BIT - CRCWidth) : 0);
 
         remainder = static_cast<CRCType>(remainder << SHIFT);
 
@@ -762,22 +763,6 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     }
 
     return remainder;
-}
-
-/**
-    @brief Function to force a compile-time expression to be >= 0.
-    @note This function is used to avoid compiler warnings because all constexpr values are evaluated
-        in a function even in a branch will never be executed. This also means we don't need pragmas
-        to get rid of warnings, but it still can be computed at compile-time. Win-win!
-    @param[in] x Compile-time expression to bound
-    @tparam CRCType Integer type for storing the CRC result
-    @tparam CRCWidth Number of bits in the CRC
-    @return Non-negative compile-time expression
-*/
-template <typename IntegerType>
-inline crcpp_constexpr IntegerType CRC::BoundedConstexprValue(IntegerType x)
-{
-    return (x < IntegerType(0)) ? IntegerType(0) : x;
 }
 
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
