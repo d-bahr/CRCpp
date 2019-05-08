@@ -1,11 +1,11 @@
 /**
     @file CRC.h
     @author Daniel Bahr
-    @version 0.2.0.6
+    @version 1.0.0.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2016, Daniel Bahr
+        Copyright (c) 2019, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -234,6 +234,7 @@ public:
     static const Parameters<crcpp_uint16, 16> & CRC_16_CCITTFALSE();
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
     static const Parameters<crcpp_uint16, 16> & CRC_16_CDMA2000();
+    static const Parameters<crcpp_uint16, 16> & CRC_16_CMS();
     static const Parameters<crcpp_uint16, 16> & CRC_16_DECTR();
     static const Parameters<crcpp_uint16, 16> & CRC_16_DECTX();
     static const Parameters<crcpp_uint16, 16> & CRC_16_DNP();
@@ -245,7 +246,6 @@ public:
     static const Parameters<crcpp_uint16, 16> & CRC_16_MODBUS();
     static const Parameters<crcpp_uint16, 16> & CRC_16_T10DIF();
     static const Parameters<crcpp_uint16, 16> & CRC_16_USB();
-    static const Parameters<crcpp_uint16, 16> & CRC_16_CMS();
 #endif
     static const Parameters<crcpp_uint16, 16> & CRC_16_X25();
     static const Parameters<crcpp_uint16, 16> & CRC_16_XMODEM();
@@ -396,7 +396,8 @@ inline void CRC::Table<CRCType, CRCWidth>::InitTable()
     static crcpp_constexpr CRCType BIT_MASK((CRCType(1) << (CRCWidth - CRCType(1))) |
                                            ((CRCType(1) << (CRCWidth - CRCType(1))) - CRCType(1)));
 
-    static crcpp_constexpr CRCType SHIFT(CRC::BoundedConstexprValue(CHAR_BIT - CRCWidth));
+	// The conditional expression is used to avoid a -Wshift-count-overflow warning when CHAR_BIT < CRCWidth.
+    static crcpp_constexpr CRCType SHIFT((CRCWidth < CHAR_BIT) ? CRC::BoundedConstexprValue(static_cast<CRCType>(CHAR_BIT - CRCWidth)) : 0);
 
     CRCType crc;
     unsigned char byte = 0;
@@ -415,7 +416,7 @@ inline void CRC::Table<CRCType, CRCWidth>::InitTable()
         {
             // Undo the special operation at the end of the CalculateRemainder()
             // function for non-reflected CRCs < CHAR_BIT.
-            crc <<= SHIFT;
+            crc = static_cast<CRCType>(crc << SHIFT);
         }
 
         table[byte] = crc;
@@ -524,8 +525,8 @@ inline IntegerType CRC::Reflect(IntegerType value, crcpp_uint16 numBits)
 
     for (crcpp_uint16 i = 0; i < numBits; ++i)
     {
-        reversedValue = (reversedValue << 1) | (value & 1);
-        value >>= 1;
+        reversedValue = static_cast<IntegerType>((reversedValue << 1) | (value & 1));
+        value = static_cast<IntegerType>(value >> 1);
     }
 
     return reversedValue;
@@ -621,7 +622,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
         CRCType polynomial = CRC::Reflect(parameters.polynomial, CRCWidth);
         while (size--)
         {
-            remainder ^= *current++;
+            remainder = static_cast<CRCType>(remainder ^ *current++);
 
             // An optimizing compiler might choose to unroll this loop.
             for (crcpp_size i = 0; i < CHAR_BIT; ++i)
@@ -632,9 +633,9 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
                 //     remainder = (remainder >> 1) ^ polynomial;
                 // else
                 //     remainder >>= 1;
-                remainder = (remainder >> 1) ^ ((remainder & 1) * polynomial);
+                remainder = static_cast<CRCType>((remainder >> 1) ^ ((remainder & 1) * polynomial));
 #else
-                remainder = (remainder & 1) ? ((remainder >> 1) ^ polynomial) : (remainder >> 1);
+                remainder = static_cast<CRCType>((remainder & 1) ? ((remainder >> 1) ^ polynomial) : (remainder >> 1));
 #endif
             }
         }
@@ -645,11 +646,11 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #ifndef CRCPP_BRANCHLESS
         static crcpp_constexpr CRCType CRC_HIGHEST_BIT_MASK(CRCType(1) << CRC_WIDTH_MINUS_ONE);
 #endif
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(CRCWidth - CHAR_BIT));
+        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CRCWidth - CHAR_BIT)));
 
         while (size--)
         {
-            remainder ^= (static_cast<CRCType>(*current++) << SHIFT);
+            remainder = static_cast<CRCType>(remainder ^ (static_cast<CRCType>(*current++) << SHIFT));
 
             // An optimizing compiler might choose to unroll this loop.
             for (crcpp_size i = 0; i < CHAR_BIT; ++i)
@@ -660,9 +661,9 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
                 //     remainder = (remainder << 1) ^ parameters.polynomial;
                 // else
                 //     remainder <<= 1;
-                remainder = (remainder << 1) ^ (((remainder >> CRC_WIDTH_MINUS_ONE) & 1) * parameters.polynomial);
+                remainder = static_cast<CRCType>((remainder << 1) ^ (((remainder >> CRC_WIDTH_MINUS_ONE) & 1) * parameters.polynomial));
 #else
-                remainder = (remainder & CRC_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ parameters.polynomial) : (remainder << 1);
+                remainder = static_cast<CRCType>((remainder & CRC_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ parameters.polynomial) : (remainder << 1));
 #endif
             }
         }
@@ -673,14 +674,14 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #ifndef CRCPP_BRANCHLESS
         static crcpp_constexpr CRCType CHAR_BIT_HIGHEST_BIT_MASK(CRCType(1) << CHAR_BIT_MINUS_ONE);
 #endif
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(CHAR_BIT - CRCWidth));
+        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CHAR_BIT - CRCWidth)));
 
-        CRCType polynomial = parameters.polynomial << SHIFT;
-        remainder <<= SHIFT;
+        CRCType polynomial = static_cast<CRCType>(parameters.polynomial << SHIFT);
+        remainder = static_cast<CRCType>(remainder << SHIFT);
 
         while (size--)
         {
-            remainder ^= *current++;
+            remainder = static_cast<CRCType>(remainder ^ *current++);
 
             // An optimizing compiler might choose to unroll this loop.
             for (crcpp_size i = 0; i < CHAR_BIT; ++i)
@@ -691,14 +692,14 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
                 //     remainder = (remainder << 1) ^ polynomial;
                 // else
                 //     remainder <<= 1;
-                remainder = (remainder << 1) ^ (((remainder >> CHAR_BIT_MINUS_ONE) & 1) * polynomial);
+                remainder = static_cast<CRCType>((remainder << 1) ^ (((remainder >> CHAR_BIT_MINUS_ONE) & 1) * polynomial));
 #else
-                remainder = (remainder & CHAR_BIT_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ polynomial) : (remainder << 1);
+                remainder = static_cast<CRCType>((remainder & CHAR_BIT_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ polynomial) : (remainder << 1));
 #endif
             }
         }
 
-        remainder >>= SHIFT;
+        remainder = static_cast<CRCType>(remainder >> SHIFT);
     }
 
     return remainder;
@@ -730,7 +731,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #   pragma warning (push)
 #   pragma warning (disable : 4333)
 #endif
-            remainder = (remainder >> CHAR_BIT) ^ lookupTable[static_cast<unsigned char>(remainder ^ *current++)];
+            remainder = static_cast<CRCType>((remainder >> CHAR_BIT) ^ lookupTable[static_cast<unsigned char>(remainder ^ *current++)]);
 #if defined(WIN32) || defined(_WIN32) || defined(WINCE)
 #   pragma warning (pop)
 #endif
@@ -738,18 +739,18 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     }
     else if (CRCWidth >= CHAR_BIT)
     {
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(CRCWidth - CHAR_BIT));
+        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CRCWidth - CHAR_BIT)));
 
         while (size--)
         {
-            remainder = (remainder << CHAR_BIT) ^ lookupTable[static_cast<unsigned char>((remainder >> SHIFT) ^ *current++)];
+            remainder = static_cast<CRCType>((remainder << CHAR_BIT) ^ lookupTable[static_cast<unsigned char>((remainder >> SHIFT) ^ *current++)]);
         }
     }
     else
     {
-        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(CHAR_BIT - CRCWidth));
+        static crcpp_constexpr CRCType SHIFT(BoundedConstexprValue(static_cast<CRCType>(CHAR_BIT - CRCWidth)));
 
-        remainder <<= SHIFT;
+        remainder = static_cast<CRCType>(remainder << SHIFT);
 
         while (size--)
         {
@@ -757,7 +758,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
             remainder = lookupTable[static_cast<unsigned char>(remainder ^ *current++)];
         }
 
-        remainder >>= SHIFT;
+        remainder = static_cast<CRCType>(remainder >> SHIFT);
     }
 
     return remainder;
@@ -1235,6 +1236,24 @@ inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_CDMA2000()
 }
 
 /**
+    @brief Returns a set of parameters for CRC-16 CMS.
+    @note The parameters are static and are delayed-constructed to reduce memory footprint.
+    @note CRC-16 CMS has the following parameters and check value:
+        - polynomial     = 0x8005
+        - initial value  = 0xFFFF
+        - final XOR      = 0x0000
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0xAEE7
+    @return CRC-16 CMS parameters
+*/
+inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_CMS()
+{
+    static const Parameters<crcpp_uint16, 16> parameters = { 0x8005, 0xFFFF, 0x0000, false, false };
+    return parameters;
+}
+
+/**
     @brief Returns a set of parameters for CRC-16 DECT-R (aka CRC-16 R-CRC).
     @note The parameters are static and are delayed-constructed to reduce memory footprint.
     @note CRC-16 DECT-R has the following parameters and check value:
@@ -1395,24 +1414,6 @@ inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_T10DIF()
 inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_USB()
 {
     static const Parameters<crcpp_uint16, 16> parameters = { 0x8005, 0xFFFF, 0xFFFF, true, true };
-    return parameters;
-}
-
-/**
-    @brief Returns a set of parameters for CRC-16 CMS.
-    @note The parameters are static and are delayed-constructed to reduce memory footprint.
-    @note CRC-16 CMS has the following parameters and check value:
-        - polynomial     = 0x8005
-        - initial value  = 0xFFFF
-        - final XOR      = 0x0000
-        - reflect input  = false
-        - reflect output = false
-        - check value    = 0xAEE7
-    @return CRC-16 CMS parameters
-*/
-inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_CMS()
-{
-    static const Parameters<crcpp_uint16, 16> parameters = { 0x8005, 0xFFFF, 0x0000, false, false };
     return parameters;
 }
 

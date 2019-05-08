@@ -1,11 +1,11 @@
 /**
     @file main.cpp
     @author Daniel Bahr
-    @version 0.2.0.6
+    @version 1.0.0.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2016, Daniel Bahr
+        Copyright (c) 2019, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -195,6 +195,10 @@ int main(int argc, char ** argv)
     static const char   CRC_CHECK_DATA[] = "123456789";
     static const size_t CRC_CHECK_SIZE   = sizeof(CRC_CHECK_DATA) - 1; // Note: Do not calculate CRC of null-terminator.
 
+	// Suppress warning messages when compiling with -Wunused-parameter
+	(void)argc;
+	(void)argv;
+
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_4_ITU,         uint8_t(0x7));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_EPC,         uint8_t(0x00));
@@ -225,6 +229,7 @@ int main(int argc, char ** argv)
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CCITTFALSE, uint16_t(0x29B1));
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CDMA2000,   uint16_t(0x4C06));
+    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CMS,        uint16_t(0xAEE7));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DECTR,      uint16_t(0x007E));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DECTX,      uint16_t(0x007F));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DNP,        uint16_t(0xEA82));
@@ -236,7 +241,6 @@ int main(int argc, char ** argv)
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MODBUS,     uint16_t(0x4B37));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_T10DIF,     uint16_t(0xD0DB));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_USB,        uint16_t(0xB4C8));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CMS,        uint16_t(0xAEE7));
 #endif
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_X25,        uint16_t(0x906E));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_XMODEM,     uint16_t(0x31C3));
