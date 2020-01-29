@@ -323,8 +323,8 @@ inline CRC::Table<CRCType, CRCWidth> CRC::Parameters<CRCType, CRCWidth>::MakeTab
     @tparam CRCWidth Number of bits in the CRC
 */
 template <typename CRCType, crcpp_uint16 CRCWidth>
-inline CRC::Table<CRCType, CRCWidth>::Table(const Parameters<CRCType, CRCWidth> & parameters) :
-    parameters(parameters)
+inline CRC::Table<CRCType, CRCWidth>::Table(const Parameters<CRCType, CRCWidth> & params) :
+    parameters(params)
 {
     InitTable();
 }
@@ -337,8 +337,8 @@ inline CRC::Table<CRCType, CRCWidth>::Table(const Parameters<CRCType, CRCWidth> 
     @tparam CRCWidth Number of bits in the CRC
 */
 template <typename CRCType, crcpp_uint16 CRCWidth>
-inline CRC::Table<CRCType, CRCWidth>::Table(Parameters<CRCType, CRCWidth> && parameters) :
-    parameters(::std::move(parameters))
+inline CRC::Table<CRCType, CRCWidth>::Table(Parameters<CRCType, CRCWidth> && params) :
+    parameters(::std::move(params))
 {
     InitTable();
 }
