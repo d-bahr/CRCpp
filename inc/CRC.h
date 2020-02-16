@@ -318,7 +318,7 @@ inline CRC::Table<CRCType, CRCWidth> CRC::Parameters<CRCType, CRCWidth>::MakeTab
 
 /**
     @brief Constructs a CRC table from a set of CRC parameters
-    @param[in] parameters CRC parameters
+    @param[in] params CRC parameters
     @tparam CRCType Integer type for storing the CRC result
     @tparam CRCWidth Number of bits in the CRC
 */
@@ -332,7 +332,7 @@ inline CRC::Table<CRCType, CRCWidth>::Table(const Parameters<CRCType, CRCWidth> 
 #ifdef CRCPP_USE_CPP11
 /**
     @brief Constructs a CRC table from a set of CRC parameters
-    @param[in] parameters CRC parameters
+    @param[in] params CRC parameters
     @tparam CRCType Integer type for storing the CRC result
     @tparam CRCWidth Number of bits in the CRC
 */
