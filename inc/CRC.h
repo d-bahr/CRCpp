@@ -1,11 +1,11 @@
 /**
     @file CRC.h
     @author Daniel Bahr
-    @version 1.0.0.0
+    @version 1.0.1.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2019, Daniel Bahr
+        Copyright (c) 2020, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without

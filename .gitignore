@@ -39,3 +39,4 @@ doxygen/
 !doxygen/Doxyfile.dox
 **/Debug/
 **/Release/
+**/bin/
