@@ -52,7 +52,7 @@
                                                           multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation
                                                           may be faster on processor architectures which support single-instruction integer multiplication.
         #define CRCPP_USE_CPP11                         - Define to enables C++11 features (move semantics, constexpr, static_assert, etc.).
-        #define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS  - Define to include definitions for little-used CRCs. 
+        #define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS  - Define to include definitions for little-used CRCs.
 */
 
 #ifndef CRCPP_CRC_H_
@@ -212,6 +212,7 @@ public:
     static const Parameters< crcpp_uint8,  6> & CRC_6_CDMA2000A();
     static const Parameters< crcpp_uint8,  6> & CRC_6_CDMA2000B();
     static const Parameters< crcpp_uint8,  6> & CRC_6_ITU();
+    static const Parameters< crcpp_uint8,  6> & CRC_6_NR();
     static const Parameters< crcpp_uint8,  7> & CRC_7();
 #endif
     static const Parameters< crcpp_uint8,  8> & CRC_8();
@@ -222,6 +223,7 @@ public:
     static const Parameters<crcpp_uint16, 10> & CRC_10();
     static const Parameters<crcpp_uint16, 10> & CRC_10_CDMA2000();
     static const Parameters<crcpp_uint16, 11> & CRC_11();
+    static const Parameters<crcpp_uint16, 11> & CRC_11_NR();
     static const Parameters<crcpp_uint16, 12> & CRC_12_CDMA2000();
     static const Parameters<crcpp_uint16, 12> & CRC_12_DECT();
     static const Parameters<crcpp_uint16, 12> & CRC_12_UMTS();
@@ -255,6 +257,7 @@ public:
     static const Parameters<crcpp_uint32, 24> & CRC_24();
     static const Parameters<crcpp_uint32, 24> & CRC_24_FLEXRAYA();
     static const Parameters<crcpp_uint32, 24> & CRC_24_FLEXRAYB();
+    static const Parameters<crcpp_uint32, 24> & CRC_24_NRC();
     static const Parameters<crcpp_uint32, 30> & CRC_30();
 #endif
     static const Parameters<crcpp_uint32, 32> & CRC_32();
@@ -893,6 +896,25 @@ inline const CRC::Parameters<crcpp_uint8, 6> & CRC::CRC_6_ITU()
 }
 
 /**
+    @brief Returns a set of parameters for CRC-6 NR.
+    @note The parameters are static and are delayed-constructed to reduce memory
+   footprint.
+    @note CRC-6 NR has the following parameters and check value:
+        - polynomial     = 0x21
+        - initial value  = 0x00
+        - final XOR      = 0x00
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0x15
+    @return CRC-6 NR parameters
+*/
+inline const CRC::Parameters<crcpp_uint8, 6> & CRC::CRC_6_NR()
+{
+    static const Parameters<crcpp_uint8, 6> parameters = { 0x21, 0x00, 0x00, false, false };
+    return parameters;
+}
+
+/**
     @brief Returns a set of parameters for CRC-7 JEDEC.
     @note The parameters are static and are delayed-constructed to reduce memory footprint.
     @note CRC-7 JEDEC has the following parameters and check value:
@@ -1035,6 +1057,25 @@ inline const CRC::Parameters<crcpp_uint16, 10> & CRC::CRC_10_CDMA2000()
 inline const CRC::Parameters<crcpp_uint16, 11> & CRC::CRC_11()
 {
     static const Parameters<crcpp_uint16, 11> parameters = { 0x385, 0x01A, 0x000, false, false };
+    return parameters;
+}
+
+/**
+    @brief Returns a set of parameters for CRC-11 NR.
+    @note The parameters are static and are delayed-constructed to reduce memory
+   footprint.
+    @note CRC-11 NR has the following parameters and check value:
+        - polynomial     = 0x621
+        - initial value  = 0x000
+        - final XOR      = 0x000
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0x5CA
+    @return CRC-11 NR parameters
+*/
+inline const CRC::Parameters<crcpp_uint16, 11> & CRC::CRC_11_NR()
+{
+    static const Parameters<crcpp_uint16, 11> parameters = { 0x621, 0x000, 0x000, false, false };
     return parameters;
 }
 
@@ -1528,6 +1569,25 @@ inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_FLEXRAYA()
 inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_FLEXRAYB()
 {
     static const Parameters<crcpp_uint32, 24> parameters = { 0x5D6DCB, 0xABCDEF, 0x000000, false, false };
+    return parameters;
+}
+
+/**
+    @brief Returns a set of parameters for CRC-24 NR-C.
+    @note The parameters are static and are delayed-constructed to reduce memory
+   footprint.
+    @note CRC-24 NR-C has the following parameters and check value:
+        - polynomial     = 0xB2B117
+        - initial value  = 0x000000
+        - final XOR      = 0x000000
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0xF48279 double check!
+    @return CRC-24 NR-C parameters
+*/
+inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_NRC()
+{
+    static const Parameters<crcpp_uint32, 24> parameters = { 0xB2B117, 0x000000, 0x000000, false, false };
     return parameters;
 }
 
