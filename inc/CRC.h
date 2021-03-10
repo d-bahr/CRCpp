@@ -258,6 +258,8 @@ public:
     static const Parameters<crcpp_uint32, 24> & CRC_24();
     static const Parameters<crcpp_uint32, 24> & CRC_24_FLEXRAYA();
     static const Parameters<crcpp_uint32, 24> & CRC_24_FLEXRAYB();
+    static const Parameters<crcpp_uint32, 24> & CRC_24_LTEA();
+    static const Parameters<crcpp_uint32, 24> & CRC_24_LTEB();
     static const Parameters<crcpp_uint32, 24> & CRC_24_NRC();
     static const Parameters<crcpp_uint32, 30> & CRC_30();
 #endif
@@ -1592,6 +1594,44 @@ inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_FLEXRAYB()
 }
 
 /**
+    @brief Returns a set of parameters for CRC-24 LTE-A/NR-A.
+    @note The parameters are static and are delayed-constructed to reduce memory
+   footprint.
+    @note CRC-24 LTE-A has the following parameters and check value:
+        - polynomial     = 0x864CFB
+        - initial value  = 0x000000
+        - final XOR      = 0x000000
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0xCDE703
+    @return CRC-24 LTE-A parameters
+*/
+inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_LTEA()
+{
+    static const Parameters<crcpp_uint32, 24> parameters = { 0x864CFB, 0x000000, 0x000000, false, false };
+    return parameters;
+}
+
+/**
+    @brief Returns a set of parameters for CRC-24 LTE-B/NR-B.
+    @note The parameters are static and are delayed-constructed to reduce memory
+   footprint.
+    @note CRC-24 LTE-B has the following parameters and check value:
+        - polynomial     = 0x800063
+        - initial value  = 0x000000
+        - final XOR      = 0x000000
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0x23EF52
+    @return CRC-24 LTE-B parameters
+*/
+inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_LTEB()
+{
+    static const Parameters<crcpp_uint32, 24> parameters = { 0x800063, 0x000000, 0x000000, false, false };
+    return parameters;
+}
+
+/**
     @brief Returns a set of parameters for CRC-24 NR-C.
     @note The parameters are static and are delayed-constructed to reduce memory
    footprint.
@@ -1601,7 +1641,7 @@ inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_FLEXRAYB()
         - final XOR      = 0x000000
         - reflect input  = false
         - reflect output = false
-        - check value    = 0xF48279 double check!
+        - check value    = 0xF48279
     @return CRC-24 NR-C parameters
 */
 inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_NRC()
