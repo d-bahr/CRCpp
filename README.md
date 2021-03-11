@@ -166,6 +166,10 @@ Define to enables C++11 features (move semantics, constexpr, static_assert, etc.
 * `#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS`
 Define to include definitions for little-used CRCs. Not defined by default.
 
+### Documentation
+
+https://d-bahr.github.io/CRCpp/
+
 ### License
 
 CRC++ is free to use and provided under a BSD license.
