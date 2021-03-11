@@ -82,7 +82,24 @@ int main(int argc, char ** argv)
 
 This will return the same CRC as the first example.
 
-Both of the above examples compute a CRC bit-by-bit. However, CRC++ also supports lookup tables, as the following example demonstrates:
+If you need to compute a CRC on an input that is not a multiple of `CHAR_BIT` (usually 8 bits), use the `CalculateBits()` function instead:
+
+```cpp
+int main(int argc, char ** argv)
+{
+	const unsigned char data[] = { 0x98, 0x76, 0x54, 0x32, 0x10 };
+	
+	// Second argument is the number of bits. The input data must
+	// be a whole number of bytes. Pad any used bits with zeros.
+	std::uint32_t crc = CRC::CalculateBits(data, 37, CRC::CRC_32());
+	
+	std::cout << std::hex << crc;
+	
+	return 0;
+}
+```
+
+The above examples compute a CRC bit-by-bit. However, CRC++ also supports lookup tables, as the following example demonstrates:
 
 ```cpp
 int main(int argc, char ** argv)
@@ -152,3 +169,11 @@ Define to include definitions for little-used CRCs. Not defined by default.
 ### License
 
 CRC++ is free to use and provided under a BSD license.
+
+### References
+
+Catalog of CRCs: https://reveng.sourceforge.io/crc-catalogue/
+
+5G-NR Specification 3GPP TS 38.212: https://www.etsi.org/deliver/etsi_ts/138200_138299/138212/15.03.00_60/ts_138212v150300p.pdf
+
+USB 2.0 Specification: https://www.usb.org/document-library/usb-20-specification
