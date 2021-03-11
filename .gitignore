@@ -33,6 +33,8 @@
 *.opendb
 *.suo
 *.sdf
+*.swp
+*.user
 
 # Directories
 doxygen/
@@ -40,3 +42,4 @@ doxygen/
 **/Debug/
 **/Release/
 **/bin/
+**/.vs/
