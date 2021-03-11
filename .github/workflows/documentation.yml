@@ -16,11 +16,11 @@ jobs:
     - name: Create
       uses: mattnotmitt/doxygen-action@v1.1.0
       with:
-        doxyfile-path: "./doxygen/Doxyfile.dox"
-        working-directory: "./doxygen"
+        doxyfile-path: "doxygen"
+        working-directory: "doxygen"
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./doxygen/html
+        publish_dir: doxygen/html
