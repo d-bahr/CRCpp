@@ -45,6 +45,8 @@
 using ::CRCPP::CRC;
 #endif
 
+static int returnCode = 0;
+
 /**
     @brief Checks the result of a CRC test and prints an error message if the test failed.
     @note Error message is printed to std::cerr with information about the CRC parameters, expected CRC, and computed CRC if a CRC test fails.
@@ -94,6 +96,8 @@ static void PrintResult(const void * data, size_t size, const CRC::Parameters<CR
         cerr << "Expected CRC: " << setw(CRCWidth) << hex << uint64_t(expectedCRC) << endl;
         cerr << "Computed CRC: " << setw(CRCWidth) << hex << uint64_t(computedCRC) << endl;
         cerr << endl;
+
+        returnCode = 1;
     }
 }
 
@@ -346,5 +350,5 @@ int main(int argc, char ** argv)
     CRC_PARTIAL_BYTE_TEST(CRC_NR_TEST_DATA, 13, CRC::CRC_11_NR, uint16_t(0x06C8));
 #endif
 
-    return 0;
+    return returnCode;
 }
