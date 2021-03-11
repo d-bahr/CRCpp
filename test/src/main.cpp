@@ -5,7 +5,7 @@
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2020, Daniel Bahr
+        Copyright (c) 2021, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ using ::CRCPP::CRC;
     @brief Checks the result of a CRC test and prints an error message if the test failed.
     @note Error message is printed to std::cerr with information about the CRC parameters, expected CRC, and computed CRC if a CRC test fails.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] expectedCRC Expected CRC of the data, used for comparison
     @param[in] computedCRC Computed CRC of the data, used for comparison
@@ -58,7 +58,7 @@ using ::CRCPP::CRC;
     @tparam CRCWidth Number of bits in the CRC
 */
 template <typename CRCType, uint16_t CRCWidth>
-static void PrintResult(const void * data, size_t size, const CRC::Parameters<CRCType, CRCWidth> & parameters, CRCType expectedCRC, CRCType computedCRC, const std::string & crcName)
+static void PrintResult(const void * data, size_t size, const CRC::Parameters<CRCType, CRCWidth> & parameters, CRCType expectedCRC, CRCType computedCRC, const std::string & crcName, bool printASCII)
 {
     using ::std::cerr;
     using ::std::endl;
@@ -68,9 +68,20 @@ static void PrintResult(const void * data, size_t size, const CRC::Parameters<CR
 
     if (expectedCRC != computedCRC)
     {
-        string dataAsASCII(reinterpret_cast<const char *>(data), reinterpret_cast<const char *>(data) + size);
+        if (printASCII)
+        {
+            string dataAsASCII(reinterpret_cast<const char *>(data), reinterpret_cast<const char *>(data) + size);
 
-        cerr << "Invalid CRC: \"" << dataAsASCII << "\"" << std::endl;
+            cerr << "Invalid CRC: \"" << dataAsASCII << "\"" << std::endl;
+        }
+        else
+        {
+            const unsigned char * bytes = reinterpret_cast<const unsigned char *>(data);
+            cerr << "Invalid CRC: \"";
+            for (size_t i = 0; i < size; ++i)
+                cerr << setw(2) << hex << static_cast<uint16_t>(bytes[i]);
+            cerr << "\"" << std::endl;
+        }
 
         cerr << "CRC parameters: " << endl;
         cerr << "\tName: "           << crcName << endl;
@@ -89,7 +100,7 @@ static void PrintResult(const void * data, size_t size, const CRC::Parameters<CR
 /**
     @brief Full CRC bit-by-bit test function. Calculates a CRC over some specified data and compares the calculated CRC to an expected CRC.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] expectedCRC Expected CRC of the data, used for comparison
     @param[in] crcName Human-readable name of the CRC algorithm used.
@@ -101,13 +112,13 @@ static void CRCBitByBitTest(const char * data, size_t size, const CRC::Parameter
 {
     CRCType computedCRC = CRC::Calculate(data, size, parameters);
 
-    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName);
+    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName, true);
 }
 
 /**
     @brief Partial CRC bit-by-bit test function. Calculates a CRC in two parts over some specified data and compares the calculated CRC to an expected CRC.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] expectedCRC Expected CRC of the data, used for comparison
     @param[in] crcName Human-readable name of the CRC algorithm used.
@@ -122,13 +133,13 @@ static void PartialCRCBitByBitTest(const char * data, size_t size, const CRC::Pa
     // Don't forget (size + 1) to round odd numbers properly!
     computedCRC = CRC::Calculate(data + (size / 2), (size + 1) / 2, parameters, computedCRC);
 
-    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName);
+    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName, true);
 }
 
 /**
     @brief Full CRC table test function. Calculates a CRC over some specified data and compares the calculated CRC to an expected CRC.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] expectedCRC Expected CRC of the data, used for comparison
     @param[in] crcName Human-readable name of the CRC algorithm used.
@@ -142,13 +153,13 @@ static void CRCTableTest(const char * data, size_t size, const CRC::Parameters<C
 
     CRCType computedCRC = CRC::Calculate(data, size, crcTable);
 
-    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName);
+    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName, true);
 }
 
 /**
     @brief Partial CRC table test function. Calculates a CRC in two parts over some specified data and compares the calculated CRC to an expected CRC.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] expectedCRC Expected CRC of the data, used for comparison
     @param[in] crcName Human-readable name of the CRC algorithm used.
@@ -165,14 +176,51 @@ static void PartialCRCTableTest(const char * data, size_t size, const CRC::Param
     // Don't forget (size + 1) to round odd numbers properly!
     computedCRC = CRC::Calculate(data + (size / 2), (size + 1) / 2, crcTable, computedCRC);
 
-    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName);
+    PrintResult<CRCType, CRCWidth>(data, size, parameters, expectedCRC, computedCRC, crcName, true);
 }
 
+/**
+    @brief Partial CRC table test function. Calculates a CRC in two parts over some specified data and compares the calculated CRC to an expected CRC.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] parameters CRC parameters
+    @param[in] expectedCRC Expected CRC of the data, used for comparison
+    @param[in] crcName Human-readable name of the CRC algorithm used.
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+*/
+template <typename CRCType, uint16_t CRCWidth>
+static void CRCBitByBitNon8BitTest(const unsigned char * data, size_t size, const CRC::Parameters<CRCType, CRCWidth> & parameters, CRCType expectedCRC, const std::string & crcName)
+{
+    CRCType computedCRC = CRC::CalculateBits(data, size, parameters);
+
+    PrintResult<CRCType, CRCWidth>(data, (size + CHAR_BIT - 1) / CHAR_BIT, parameters, expectedCRC, computedCRC, crcName, false);
+}
+
+/**
+    @brief Partial CRC table test function. Calculates a CRC in two parts over some specified data and compares the calculated CRC to an expected CRC.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] parameters CRC parameters
+    @param[in] expectedCRC Expected CRC of the data, used for comparison
+    @param[in] crcName Human-readable name of the CRC algorithm used.
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+*/
+template <typename CRCType, uint16_t CRCWidth>
+static void CRCTableNon8BitTest(const unsigned char * data, size_t size, const CRC::Parameters<CRCType, CRCWidth> & parameters, CRCType expectedCRC, const std::string & crcName)
+{
+    CRC::Table<CRCType, CRCWidth> crcTable(parameters);
+
+    CRCType computedCRC = CRC::CalculateBits(data, size, crcTable);
+
+    PrintResult<CRCType, CRCWidth>(data, (size + CHAR_BIT - 1) / CHAR_BIT, parameters, expectedCRC, computedCRC, crcName, false);
+}
 
 /**
     @brief Computes a bit-by-bit test and table CRC test.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] expectedCRC Expected CRC of the data, used for comparison
     @tparam CRCType Integer type for storing the CRC result
@@ -185,6 +233,19 @@ static void PartialCRCTableTest(const char * data, size_t size, const CRC::Param
     PartialCRCTableTest(   data, size, parameters(), expectedCRC, #parameters)
 
 /**
+    @brief Computes a bit-by-bit test and table CRC test with a non-8-bit multiple input size.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] parameters CRC parameters
+    @param[in] expectedCRC Expected CRC of the data, used for comparison
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+*/
+#define CRC_PARTIAL_BYTE_TEST(data, size, parameters, expectedCRC) \
+    CRCBitByBitNon8BitTest(data, size, parameters(), expectedCRC, #parameters); \
+    CRCTableNon8BitTest(   data, size, parameters(), expectedCRC, #parameters);
+
+/**
     @brief Unit test entry point.
     @param[in] argc Unused
     @param[in] argv Unused
@@ -195,9 +256,9 @@ int main(int argc, char ** argv)
     static const char   CRC_CHECK_DATA[] = "123456789";
     static const size_t CRC_CHECK_SIZE   = sizeof(CRC_CHECK_DATA) - 1; // Note: Do not calculate CRC of null-terminator.
 
-	// Suppress warning messages when compiling with -Wunused-parameter
-	(void)argc;
-	(void)argv;
+    // Suppress warning messages when compiling with -Wunused-parameter
+    (void)argc;
+    (void)argv;
 
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_4_ITU,         uint8_t(0x7));
@@ -269,6 +330,20 @@ int main(int argc, char ** argv)
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_Q,          uint32_t(0x3010BF7F));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_40_GSM,        uint64_t(0xD4164FC646));
     CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_64,            uint64_t(0x6C40DF5F0B497347));
+#endif
+
+#ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
+    // Tests for non-8-bit multiples of data.
+
+    // USB 2.0 uses 5-bit CRCs on 11 bits of data. Check one such example
+    // found in the USB specification.
+    static const unsigned char CRC_5_USB_TEST_DATA[] = { 0x10, 0x07 };
+    CRC_PARTIAL_BYTE_TEST(CRC_5_USB_TEST_DATA, 11, CRC::CRC_5_USB, uint8_t(0x05));
+
+    // Test 13-bit inputs used in 5G-NR
+    static const unsigned char CRC_NR_TEST_DATA[] = { 0xBD, 0x10 };
+    CRC_PARTIAL_BYTE_TEST(CRC_NR_TEST_DATA, 13, CRC::CRC_6_NR,  uint8_t(0x2F));
+    CRC_PARTIAL_BYTE_TEST(CRC_NR_TEST_DATA, 13, CRC::CRC_11_NR, uint16_t(0x06C8));
 #endif
 
     return 0;

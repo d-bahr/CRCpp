@@ -5,7 +5,7 @@
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2020, Daniel Bahr
+        Copyright (c) 2021, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -202,6 +202,18 @@ public:
     template <typename CRCType, crcpp_uint16 CRCWidth>
     static CRCType Calculate(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable, CRCType crc);
 
+    template <typename CRCType, crcpp_uint16 CRCWidth>
+    static CRCType CalculateBits(const void * data, crcpp_size size, const Parameters<CRCType, CRCWidth> & parameters);
+
+    template <typename CRCType, crcpp_uint16 CRCWidth>
+    static CRCType CalculateBits(const void * data, crcpp_size size, const Parameters<CRCType, CRCWidth> & parameters, CRCType crc);
+
+    template <typename CRCType, crcpp_uint16 CRCWidth>
+    static CRCType CalculateBits(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable);
+
+    template <typename CRCType, crcpp_uint16 CRCWidth>
+    static CRCType CalculateBits(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable, CRCType crc);
+
     // Common CRCs up to 64 bits.
     // Note: Check values are the computed CRCs when given an ASCII input of "123456789" (without null terminator)
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
@@ -305,6 +317,9 @@ private:
 
     template <typename CRCType, crcpp_uint16 CRCWidth>
     static CRCType CalculateRemainder(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable, CRCType remainder);
+
+    template <typename CRCType, crcpp_uint16 CRCWidth>
+    static CRCType CalculateRemainderBits(unsigned char byte, crcpp_size numBits, const Parameters<CRCType, CRCWidth> & parameters, CRCType remainder);
 };
 
 /**
@@ -430,7 +445,7 @@ inline void CRC::Table<CRCType, CRCWidth>::InitTable()
 /**
     @brief Computes a CRC.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @tparam CRCType Integer type for storing the CRC result
     @tparam CRCWidth Number of bits in the CRC
@@ -449,7 +464,7 @@ inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Paramete
     @brief Appends additional data to a previous CRC calculation.
     @note This function can be used to compute multi-part CRCs.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] crc CRC from a previous calculation
     @tparam CRCType Integer type for storing the CRC result
@@ -471,7 +486,7 @@ inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Paramete
 /**
     @brief Computes a CRC via a lookup table.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] lookupTable CRC lookup table
     @tparam CRCType Integer type for storing the CRC result
     @tparam CRCWidth Number of bits in the CRC
@@ -493,7 +508,7 @@ inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Table<CR
     @brief Appends additional data to a previous CRC calculation using a lookup table.
     @note This function can be used to compute multi-part CRCs.
     @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] lookupTable CRC lookup table
     @param[in] crc CRC from a previous calculation
     @tparam CRCType Integer type for storing the CRC result
@@ -508,6 +523,149 @@ inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Table<CR
     CRCType remainder = UndoFinalize<CRCType, CRCWidth>(crc, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
 
     remainder = CalculateRemainder(data, size, lookupTable, remainder);
+
+    // No need to mask the remainder here; the mask will be applied in the Finalize() function.
+
+    return Finalize<CRCType, CRCWidth>(remainder, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
+}
+
+/**
+    @brief Computes a CRC.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] parameters CRC parameters
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+    @return CRC
+*/
+template <typename CRCType, crcpp_uint16 CRCWidth>
+inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Parameters<CRCType, CRCWidth> & parameters)
+{
+    CRCType remainder = parameters.initialValue;
+
+    // Calculate the remainder on a whole number of bytes first, then call
+    // a special-case function for the remaining bits.
+    crcpp_size wholeNumberOfBytes = size / CHAR_BIT;
+    if (wholeNumberOfBytes > 0)
+    {
+        remainder = CalculateRemainder(data, wholeNumberOfBytes, parameters, remainder);
+    }
+
+    crcpp_size remainingNumberOfBits = size % CHAR_BIT;
+    if (remainingNumberOfBits != 0)
+    {
+        unsigned char lastByte = *(reinterpret_cast<const unsigned char *>(data) + wholeNumberOfBytes);
+        remainder = CalculateRemainderBits(lastByte, remainingNumberOfBits, parameters, remainder);
+    }
+
+    // No need to mask the remainder here; the mask will be applied in the Finalize() function.
+
+    return Finalize<CRCType, CRCWidth>(remainder, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
+}
+/**
+    @brief Appends additional data to a previous CRC calculation.
+    @note This function can be used to compute multi-part CRCs.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] parameters CRC parameters
+    @param[in] crc CRC from a previous calculation
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+    @return CRC
+*/
+template <typename CRCType, crcpp_uint16 CRCWidth>
+inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Parameters<CRCType, CRCWidth> & parameters, CRCType crc)
+{
+    CRCType remainder = UndoFinalize<CRCType, CRCWidth>(crc, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
+
+    // Calculate the remainder on a whole number of bytes first, then call
+    // a special-case function for the remaining bits.
+    crcpp_size wholeNumberOfBytes = size / CHAR_BIT;
+    if (wholeNumberOfBytes > 0)
+    {
+        remainder = CalculateRemainder(data, wholeNumberOfBytes, parameters, parameters.initialValue);
+    }
+
+    crcpp_size remainingNumberOfBits = size % CHAR_BIT;
+    if (remainingNumberOfBits != 0)
+    {
+        unsigned char lastByte = *(reinterpret_cast<const unsigned char *>(data) + wholeNumberOfBytes);
+        remainder = CalculateRemainderBits(lastByte, remainingNumberOfBits, parameters, remainder);
+    }
+
+    // No need to mask the remainder here; the mask will be applied in the Finalize() function.
+
+    return Finalize<CRCType, CRCWidth>(remainder, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
+}
+
+/**
+    @brief Computes a CRC via a lookup table.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] lookupTable CRC lookup table
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+    @return CRC
+*/
+template <typename CRCType, crcpp_uint16 CRCWidth>
+inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable)
+{
+    const Parameters<CRCType, CRCWidth> & parameters = lookupTable.GetParameters();
+
+    CRCType remainder = parameters.initialValue;
+
+    // Calculate the remainder on a whole number of bytes first, then call
+    // a special-case function for the remaining bits.
+    crcpp_size wholeNumberOfBytes = size / CHAR_BIT;
+    if (wholeNumberOfBytes > 0)
+    {
+        remainder = CalculateRemainder(data, wholeNumberOfBytes, lookupTable, remainder);
+    }
+
+    crcpp_size remainingNumberOfBits = size % CHAR_BIT;
+    if (remainingNumberOfBits != 0)
+    {
+        unsigned char lastByte = *(reinterpret_cast<const unsigned char *>(data) + wholeNumberOfBytes);
+        remainder = CalculateRemainderBits(lastByte, remainingNumberOfBits, parameters, remainder);
+    }
+
+    // No need to mask the remainder here; the mask will be applied in the Finalize() function.
+
+    return Finalize<CRCType, CRCWidth>(remainder, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
+}
+
+/**
+    @brief Appends additional data to a previous CRC calculation using a lookup table.
+    @note This function can be used to compute multi-part CRCs.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bits
+    @param[in] lookupTable CRC lookup table
+    @param[in] crc CRC from a previous calculation
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+    @return CRC
+*/
+template <typename CRCType, crcpp_uint16 CRCWidth>
+inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Table<CRCType, CRCWidth> & lookupTable, CRCType crc)
+{
+    const Parameters<CRCType, CRCWidth> & parameters = lookupTable.GetParameters();
+
+    CRCType remainder = UndoFinalize<CRCType, CRCWidth>(crc, parameters.finalXOR, parameters.reflectInput != parameters.reflectOutput);
+
+    // Calculate the remainder on a whole number of bytes first, then call
+    // a special-case function for the remaining bits.
+    crcpp_size wholeNumberOfBytes = size / CHAR_BIT;
+    if (wholeNumberOfBytes > 0)
+    {
+        remainder = CalculateRemainder(data, wholeNumberOfBytes, lookupTable, parameters.initialValue);
+    }
+
+    crcpp_size remainingNumberOfBits = size % CHAR_BIT;
+    if (remainingNumberOfBits > 0)
+    {
+        unsigned char lastByte = *(reinterpret_cast<const unsigned char *>(data) + wholeNumberOfBytes);
+        remainder = CalculateRemainderBits(lastByte, remainingNumberOfBits, parameters, remainder);
+    }
 
     // No need to mask the remainder here; the mask will be applied in the Finalize() function.
 
@@ -596,7 +754,7 @@ inline CRCType CRC::UndoFinalize(CRCType crc, CRCType finalXOR, bool reflectOutp
 /**
     @brief Computes a CRC remainder.
     @param[in] data Data over which the remainder will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] parameters CRC parameters
     @param[in] remainder Running CRC remainder. Can be an initial value or the result of a previous CRC remainder calculation.
     @tparam CRCType Integer type for storing the CRC result
@@ -713,7 +871,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 /**
     @brief Computes a CRC remainder using lookup table.
     @param[in] data Data over which the remainder will be computed
-    @param[in] size Size of the data
+    @param[in] size Size of the data, in bytes
     @param[in] lookupTable CRC lookup table
     @param[in] remainder Running CRC remainder. Can be an initial value or the result of a previous CRC remainder calculation.
     @tparam CRCType Integer type for storing the CRC result
@@ -763,6 +921,90 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
         {
             // Note: no need to mask here since remainder is guaranteed to fit in a single byte.
             remainder = lookupTable[static_cast<unsigned char>(remainder ^ *current++)];
+        }
+
+        remainder = static_cast<CRCType>(remainder >> SHIFT);
+    }
+
+    return remainder;
+}
+
+template <typename CRCType, crcpp_uint16 CRCWidth>
+inline CRCType CRC::CalculateRemainderBits(unsigned char byte, crcpp_size numBits, const Parameters<CRCType, CRCWidth> & parameters, CRCType remainder)
+{
+    // Slightly different implementations based on the parameters. The current implementations try to eliminate as much
+    // computation from the inner loop (looping over each bit) as possible.
+    if (parameters.reflectInput)
+    {
+        CRCType polynomial = CRC::Reflect(parameters.polynomial, CRCWidth);
+        remainder = static_cast<CRCType>(remainder ^ byte);
+
+        // An optimizing compiler might choose to unroll this loop.
+        for (crcpp_size i = 0; i < numBits; ++i)
+        {
+#ifdef CRCPP_BRANCHLESS
+            // Clever way to avoid a branch at the expense of a multiplication. This code is equivalent to the following:
+            // if (remainder & 1)
+            //     remainder = (remainder >> 1) ^ polynomial;
+            // else
+            //     remainder >>= 1;
+            remainder = static_cast<CRCType>((remainder >> 1) ^ ((remainder & 1) * polynomial));
+#else
+            remainder = static_cast<CRCType>((remainder & 1) ? ((remainder >> 1) ^ polynomial) : (remainder >> 1));
+#endif
+        }
+    }
+    else if (CRCWidth >= CHAR_BIT)
+    {
+        static crcpp_constexpr CRCType CRC_WIDTH_MINUS_ONE(CRCWidth - CRCType(1));
+#ifndef CRCPP_BRANCHLESS
+        static crcpp_constexpr CRCType CRC_HIGHEST_BIT_MASK(CRCType(1) << CRC_WIDTH_MINUS_ONE);
+#endif
+        // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+        static crcpp_constexpr CRCType SHIFT((CRCWidth >= CHAR_BIT) ? static_cast<CRCType>(CRCWidth - CHAR_BIT) : 0);
+
+        remainder = static_cast<CRCType>(remainder ^ (static_cast<CRCType>(byte) << SHIFT));
+
+        // An optimizing compiler might choose to unroll this loop.
+        for (crcpp_size i = 0; i < numBits; ++i)
+        {
+#ifdef CRCPP_BRANCHLESS
+            // Clever way to avoid a branch at the expense of a multiplication. This code is equivalent to the following:
+            // if (remainder & CRC_HIGHEST_BIT_MASK)
+            //     remainder = (remainder << 1) ^ parameters.polynomial;
+            // else
+            //     remainder <<= 1;
+            remainder = static_cast<CRCType>((remainder << 1) ^ (((remainder >> CRC_WIDTH_MINUS_ONE) & 1) * parameters.polynomial));
+#else
+            remainder = static_cast<CRCType>((remainder & CRC_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ parameters.polynomial) : (remainder << 1));
+#endif
+        }
+    }
+    else
+    {
+        static crcpp_constexpr CRCType CHAR_BIT_MINUS_ONE(CHAR_BIT - 1);
+#ifndef CRCPP_BRANCHLESS
+        static crcpp_constexpr CRCType CHAR_BIT_HIGHEST_BIT_MASK(CRCType(1) << CHAR_BIT_MINUS_ONE);
+#endif
+        // The conditional expression is used to avoid a -Wshift-count-overflow warning.
+        static crcpp_constexpr CRCType SHIFT((CHAR_BIT >= CRCWidth) ? static_cast<CRCType>(CHAR_BIT - CRCWidth) : 0);
+
+        CRCType polynomial = static_cast<CRCType>(parameters.polynomial << SHIFT);
+        remainder = static_cast<CRCType>((remainder << SHIFT) ^ byte);
+
+        // An optimizing compiler might choose to unroll this loop.
+        for (crcpp_size i = 0; i < numBits; ++i)
+        {
+#ifdef CRCPP_BRANCHLESS
+            // Clever way to avoid a branch at the expense of a multiplication. This code is equivalent to the following:
+            // if (remainder & CHAR_BIT_HIGHEST_BIT_MASK)
+            //     remainder = (remainder << 1) ^ polynomial;
+            // else
+            //     remainder <<= 1;
+            remainder = static_cast<CRCType>((remainder << 1) ^ (((remainder >> CHAR_BIT_MINUS_ONE) & 1) * polynomial));
+#else
+            remainder = static_cast<CRCType>((remainder & CHAR_BIT_HIGHEST_BIT_MASK) ? ((remainder << 1) ^ polynomial) : (remainder << 1));
+#endif
         }
 
         remainder = static_cast<CRCType>(remainder >> SHIFT);
@@ -1018,7 +1260,7 @@ inline const CRC::Parameters<crcpp_uint8, 8> & CRC::CRC_8_WCDMA()
         - final XOR      = 0x00
         - reflect input  = false
         - reflect output = false
-        - check value    = 0x25
+        - check value    = 0xEA
     @return CRC-8 LTE parameters
 */
 inline const CRC::Parameters<crcpp_uint8, 8> & CRC::CRC_8_LTE()
