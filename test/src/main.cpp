@@ -1,7 +1,7 @@
 /**
     @file main.cpp
     @author Daniel Bahr
-    @version 1.0.1.0
+    @version 1.1.0.0
     @copyright
     @parblock
         CRC++
