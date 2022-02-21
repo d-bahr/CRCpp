@@ -247,6 +247,7 @@ public:
     static const Parameters<crcpp_uint16, 16> & CRC_16_ARC();
     static const Parameters<crcpp_uint16, 16> & CRC_16_BUYPASS();
     static const Parameters<crcpp_uint16, 16> & CRC_16_CCITTFALSE();
+    static const Parameters<crcpp_uint16, 16> & CRC_16_MCRF4XX();
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
     static const Parameters<crcpp_uint16, 16> & CRC_16_CDMA2000();
     static const Parameters<crcpp_uint16, 16> & CRC_16_CMS();
@@ -1502,6 +1503,24 @@ inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_BUYPASS()
 inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_CCITTFALSE()
 {
     static const Parameters<crcpp_uint16, 16> parameters = { 0x1021, 0xFFFF, 0x0000, false, false };
+    return parameters;
+}
+
+/**
+    @brief Returns a set of parameters for CRC-16 MCRF4XX.
+    @note The parameters are static and are delayed-constructed to reduce memory footprint.
+    @note CRC-16 MCRF4XX has the following parameters and check value:
+        - polynomial     = 0x1021
+        - initial value  = 0xFFFF
+        - final XOR      = 0x0000
+        - reflect input  = true
+        - reflect output = true
+        - check value    = 0x6F91
+    @return CRC-16 MCRF4XX parameters
+*/
+inline const CRC::Parameters<crcpp_uint16, 16> & CRC::CRC_16_MCRF4XX()
+{
+    static const Parameters<crcpp_uint16, 16> parameters = { 0x1021, 0xFFFF, 0x0000, true, true};
     return parameters;
 }
 
