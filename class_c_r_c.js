@@ -37,6 +37,7 @@ var class_c_r_c =
     [ "CRC_16_GENIBUS", "class_c_r_c.html#aaf15ad266e319eb2d87d4f7ddbddef07", null ],
     [ "CRC_16_KERMIT", "class_c_r_c.html#a95f0f45a06b94e0cd5b92c9e550bba8a", null ],
     [ "CRC_16_MAXIM", "class_c_r_c.html#a659b76901fe9b73f3a695ea00d5c356a", null ],
+    [ "CRC_16_MCRF4XX", "class_c_r_c.html#aacc591d674080d9ae3d94f3798a97300", null ],
     [ "CRC_16_MODBUS", "class_c_r_c.html#ac0f60e526a21c5b17567a10c3af7be12", null ],
     [ "CRC_16_T10DIF", "class_c_r_c.html#aac4b38d85d1699bf1c5e49c5bb099c36", null ],
     [ "CRC_16_USB", "class_c_r_c.html#abf79f8ef92224f3c397231c6c6e3a2d9", null ],
@@ -74,8 +75,8 @@ var class_c_r_c =
     [ "CRC_8_MAXIM", "class_c_r_c.html#a6c60151d2fdf84de2e05865c7265b92e", null ],
     [ "CRC_8_WCDMA", "class_c_r_c.html#a6ea5fbb9f6475e6401f1840c9d6df0aa", null ],
     [ "Finalize", "class_c_r_c.html#af3247bcac33c4422cbbd97d0eddb1fe6", null ],
-    [ "operator=", "class_c_r_c.html#a5a8bb45503817499b9e484c30b7d7732", null ],
-    [ "operator=", "class_c_r_c.html#a6e33ed09cf6c962d030c3573ac5c6b0a", null ],
+    [ "operator=", "class_c_r_c.html#a2a2143ed5230e5af95d7f20867b6f1b5", null ],
+    [ "operator=", "class_c_r_c.html#a915db88020cabf0c7094e5b69110ded7", null ],
     [ "Reflect", "class_c_r_c.html#ab508d95b45054e2471eb4a16a9458208", null ],
     [ "UndoFinalize", "class_c_r_c.html#a5818ddbe23b318349e59323ee03cb28f", null ]
 ];

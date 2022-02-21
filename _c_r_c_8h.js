@@ -1,8 +1,8 @@
 var _c_r_c_8h =
 [
     [ "CRC", "class_c_r_c.html", "class_c_r_c" ],
-    [ "Parameters", "struct_c_r_c_1_1_parameters.html", "struct_c_r_c_1_1_parameters" ],
-    [ "Table", "struct_c_r_c_1_1_table.html", "struct_c_r_c_1_1_table" ],
+    [ "CRC::Parameters< CRCType, CRCWidth >", "struct_c_r_c_1_1_parameters.html", "struct_c_r_c_1_1_parameters" ],
+    [ "CRC::Table< CRCType, CRCWidth >", "struct_c_r_c_1_1_table.html", "struct_c_r_c_1_1_table" ],
     [ "crcpp_constexpr", "_c_r_c_8h.html#ac53723d95b5c8c7d707e8e3ebcb4e143", null ],
     [ "crcpp_size", "_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6", null ],
     [ "crcpp_uint16", "_c_r_c_8h.html#add273674b22f031b158220eeb560c7a0", null ],
