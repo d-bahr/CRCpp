@@ -166,6 +166,44 @@ Define to enables C++11 features (move semantics, constexpr, static_assert, etc.
 * `#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS`
 Define to include definitions for little-used CRCs. Not defined by default.
 
+### Build
+
+CRC does not require a build for basic usage; simply include the header file in your project.
+
+Unit tests and documentation can be built manually with the project files provided or automatically with CMake.
+
+To build documentation manually:
+```bash
+cd doxygen
+doxygen Doxyfile.dox
+```
+
+To build unit tests manually via Make:
+```bash
+# Build
+cd test/prj/gcc
+make [debug|release]
+# Run unit tests
+bin/unittest
+```
+
+Project files and solutions for Visual Studio 2015, 2017 and 2022 are provided in `test/prj`. Simply open the solution file and run the project; no additional configuration should be necessary.
+
+CMake can also be used to build the documentation and unit tests. An out-of-source build is recommended. In this example, we will do an out-of-source build in the `build` directory:
+```bash
+mkdir -p build
+cd build
+cmake .. [-DBUILD_DOC=ON]
+# Build and run unit tests
+make tests
+# Build documentation
+make doxygen
+# Install header file
+sudo make install
+```
+
+Unit tests are built by default. Enable the `BUILD_DOC` CMake flag to also build documentation (requires [Doxygen](https://www.doxygen.nl/index.html)).
+
 ### Documentation
 
 https://d-bahr.github.io/CRCpp/
