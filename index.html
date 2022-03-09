@@ -235,12 +235,34 @@ Configuration</h2>
 <li><code>#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS</code> Define to include definitions for little-used CRCs. Not defined by default.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md5"></a>
+Build</h2>
+<p ><a class="el" href="class_c_r_c.html" title="Static class for computing CRCs.">CRC</a> does not require a build for basic usage; simply include the header file in your project.</p>
+<p >Unit tests and documentation can be built manually with the project files provided or automatically with CMake.</p>
+<p >To build documentation manually: </p><div class="fragment"><div class="line">cd doxygen</div>
+<div class="line">doxygen Doxyfile.dox</div>
+</div><!-- fragment --><p >To build unit tests manually via Make: </p><div class="fragment"><div class="line"># Build</div>
+<div class="line">cd test/prj/gcc</div>
+<div class="line">make [debug|release]</div>
+<div class="line"># Run unit tests</div>
+<div class="line">bin/unittest</div>
+</div><!-- fragment --><p >Project files and solutions for Visual Studio 2015, 2017 and 2022 are provided in <code>test/prj</code>. Simply open the solution file and run the project; no additional configuration should be necessary.</p>
+<p >CMake can also be used to build the documentation and unit tests. An out-of-source build is recommended. In this example, we will do an out-of-source build in the <code>build</code> directory: </p><div class="fragment"><div class="line">mkdir -p build</div>
+<div class="line">cd build</div>
+<div class="line">cmake .. [-DBUILD_DOC=ON]</div>
+<div class="line"># Build and run unit tests</div>
+<div class="line">make tests</div>
+<div class="line"># Build documentation</div>
+<div class="line">make doxygen</div>
+<div class="line"># Install header file</div>
+<div class="line">sudo make install</div>
+</div><!-- fragment --><p >Unit tests are built by default. Enable the <code>BUILD_DOC</code> CMake flag to also build documentation (requires <a href="https://www.doxygen.nl/index.html">Doxygen</a>).</p>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Documentation</h2>
 <p ><a href="https://d-bahr.github.io/CRCpp/">https://d-bahr.github.io/CRCpp/</a></p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 License</h2>
 <p >CRC++ is free to use and provided under a BSD license.</p>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 References</h2>
 <p >Catalog of CRCs: <a href="https://reveng.sourceforge.io/crc-catalogue/">https://reveng.sourceforge.io/crc-catalogue/</a></p>
 <p >5G-NR Specification 3GPP TS 38.212: <a href="https://www.etsi.org/deliver/etsi_ts/138200_138299/138212/15.03.00_60/ts_138212v150300p.pdf">https://www.etsi.org/deliver/etsi_ts/138200_138299/138212/15.03.00_60/ts_138212v150300p.pdf</a></p>
