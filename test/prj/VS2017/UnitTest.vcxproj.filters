@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{05ca4b08-9045-41b2-a0e9-8b425317171f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CRC++">
+      <UniqueIdentifier>{fdaa5651-3fd5-4cbd-882c-787dc7c7abff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CRC++\inc">
+      <UniqueIdentifier>{01963511-135a-41a5-b8d8-dfe180126405}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\inc\CRC.h">
+      <Filter>CRC++\inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
