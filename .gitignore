@@ -35,11 +35,19 @@
 *.sdf
 *.swp
 *.user
+*.cmake
+CMakeDoxyfile.in
+CMakeCache.txt
+DartConfiguration.tcl
+/Makefile
 
 # Directories
-doxygen/
+CMakeFiles/
+Testing/
+doxygen/*
 !doxygen/Doxyfile.dox
 **/Debug/
 **/Release/
 **/bin/
+**/build/
 **/.vs/
