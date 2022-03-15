@@ -1,7 +1,7 @@
 /**
     @file CRC.h
     @author Daniel Bahr
-    @version 1.1.0.1
+    @version 1.2.0.0
     @copyright
     @parblock
         CRC++
