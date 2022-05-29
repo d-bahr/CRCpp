@@ -60,7 +60,8 @@ var searchData=
   ['crc_5f7_57',['CRC_7',['../class_c_r_c.html#a1edf93958370beebfdba90714e5ef42d',1,'CRC']]],
   ['crc_5f8_58',['CRC_8',['../class_c_r_c.html#a50f1e00559defde552c58ebcc741257b',1,'CRC']]],
   ['crc_5f8_5febu_59',['CRC_8_EBU',['../class_c_r_c.html#ab834a8b3eafc8781fbdcb566d524cd52',1,'CRC']]],
-  ['crc_5f8_5flte_60',['CRC_8_LTE',['../class_c_r_c.html#adfd7b0450be56dcc7f520bd74def9be2',1,'CRC']]],
-  ['crc_5f8_5fmaxim_61',['CRC_8_MAXIM',['../class_c_r_c.html#a6c60151d2fdf84de2e05865c7265b92e',1,'CRC']]],
-  ['crc_5f8_5fwcdma_62',['CRC_8_WCDMA',['../class_c_r_c.html#a6ea5fbb9f6475e6401f1840c9d6df0aa',1,'CRC']]]
+  ['crc_5f8_5fhdlc_60',['CRC_8_HDLC',['../class_c_r_c.html#a6e1360b675e2dd18bfc8b27f5ec83de9',1,'CRC']]],
+  ['crc_5f8_5flte_61',['CRC_8_LTE',['../class_c_r_c.html#adfd7b0450be56dcc7f520bd74def9be2',1,'CRC']]],
+  ['crc_5f8_5fmaxim_62',['CRC_8_MAXIM',['../class_c_r_c.html#a6c60151d2fdf84de2e05865c7265b92e',1,'CRC']]],
+  ['crc_5f8_5fwcdma_63',['CRC_8_WCDMA',['../class_c_r_c.html#a6ea5fbb9f6475e6401f1840c9d6df0aa',1,'CRC']]]
 ];
