@@ -100,7 +100,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>CRCPP_USE_CPP11;CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

@@ -127,6 +127,12 @@
 #   define crcpp_constexpr const
 #endif
 
+#if defined(WIN32) || defined(_WIN32) || defined(WINCE)
+/* Disable warning C4127: conditional expression is constant. */
+#pragma warning(push)
+#pragma warning(disable : 4127)
+#endif
+
 #ifdef CRCPP_USE_NAMESPACE
 namespace CRCPP
 {
@@ -2099,6 +2105,10 @@ inline const CRC::Parameters<crcpp_uint64, 64> & CRC::CRC_64()
 
 #ifdef CRCPP_USE_NAMESPACE
 }
+#endif
+
+#if defined(WIN32) || defined(_WIN32) || defined(WINCE)
+#pragma warning(pop)
 #endif
 
 #endif // CRCPP_CRC_H_
