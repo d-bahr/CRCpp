@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['undofinalize_0',['UndoFinalize',['../class_c_r_c.html#a5818ddbe23b318349e59323ee03cb28f',1,'CRC']]]
+  ['parameters_0',['Parameters',['../struct_c_r_c_1_1_parameters.html',1,'CRC']]],
+  ['parameters_1',['parameters',['../struct_c_r_c_1_1_table.html#af58a65824eab613688852f20f6a4dce2',1,'CRC::Table']]],
+  ['polynomial_2',['polynomial',['../struct_c_r_c_1_1_parameters.html#a7f03a44c0c18d54d873573c50d4de3e5',1,'CRC::Parameters']]]
 ];
