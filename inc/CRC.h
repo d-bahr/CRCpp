@@ -127,7 +127,7 @@
 #   define crcpp_constexpr const
 #endif
 
-#if defined(WIN32) || defined(_WIN32) || defined(WINCE)
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__INTEL_COMPILER)
 /* Disable warning C4127: conditional expression is constant. */
 #pragma warning(push)
 #pragma warning(disable : 4127)
@@ -895,7 +895,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
     {
         while (size--)
         {
-#if defined(WIN32) || defined(_WIN32) || defined(WINCE)
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__INTEL_COMPILER)
     // Disable warning about data loss when doing (remainder >> CHAR_BIT) when
     // remainder is one byte long. The algorithm is still correct in this case,
     // though it's possible that one additional machine instruction will be executed.
@@ -903,7 +903,7 @@ inline CRCType CRC::CalculateRemainder(const void * data, crcpp_size size, const
 #   pragma warning (disable : 4333)
 #endif
             remainder = static_cast<CRCType>((remainder >> CHAR_BIT) ^ lookupTable[static_cast<unsigned char>(remainder ^ *current++)]);
-#if defined(WIN32) || defined(_WIN32) || defined(WINCE)
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__INTEL_COMPILER)
 #   pragma warning (pop)
 #endif
         }
@@ -2107,7 +2107,7 @@ inline const CRC::Parameters<crcpp_uint64, 64> & CRC::CRC_64()
 }
 #endif
 
-#if defined(WIN32) || defined(_WIN32) || defined(WINCE)
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__INTEL_COMPILER)
 #pragma warning(pop)
 #endif
 
