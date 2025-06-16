@@ -138,6 +138,12 @@ namespace CRCPP
 {
 #endif
 
+crcpp_constexpr int CRCPP_MAJOR_VERSION = 1;
+crcpp_constexpr int CRCPP_MINOR_VERSION = 2;
+crcpp_constexpr int CRCPP_PATCH_VERSION = 0;
+crcpp_constexpr int CRCPP_TWEAK_VERSION = 0;
+crcpp_constexpr char CRCPP_COPYRIGHT[] = "Copyright (c) 2022, Daniel Bahr";
+
 /**
     @brief Static class for computing CRCs.
     @note This class supports computation of full and multi-part CRCs, using a bit-by-bit algorithm or a
