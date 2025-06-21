@@ -1,11 +1,11 @@
 /**
     @file main.cpp
     @author Daniel Bahr
-    @version 1.2.0.0
+    @version 1.2.1.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2022, Daniel Bahr
+        Copyright (c) 2022-2025, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
