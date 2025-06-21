@@ -160,8 +160,8 @@ Usage</h2>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="a_c_r_c_8h_html"><div class="ttname"><a href="_c_r_c_8h.html">CRC.h</a></div></div>
-<div class="ttc" id="aclass_c_r_c_html_ae37d010c92c3afcf0da63834afc51469"><div class="ttname"><a href="class_c_r_c.html#ae37d010c92c3afcf0da63834afc51469">CRC::Calculate</a></div><div class="ttdeci">static CRCType Calculate(const void *data, crcpp_size size, const Parameters&lt; CRCType, CRCWidth &gt; &amp;parameters)</div><div class="ttdoc">Computes a CRC.</div><div class="ttdef"><b>Definition</b> CRC.h:477</div></div>
-<div class="ttc" id="aclass_c_r_c_html_aea541af7b4c36708b8152476e8580053"><div class="ttname"><a href="class_c_r_c.html#aea541af7b4c36708b8152476e8580053">CRC::CRC_32</a></div><div class="ttdeci">static const Parameters&lt; crcpp_uint32, 32 &gt; &amp; CRC_32()</div><div class="ttdoc">Returns a set of parameters for CRC-32 (aka CRC-32 ADCCP, CRC-32 PKZip).</div><div class="ttdef"><b>Definition</b> CRC.h:1984</div></div>
+<div class="ttc" id="aclass_c_r_c_html_ae37d010c92c3afcf0da63834afc51469"><div class="ttname"><a href="class_c_r_c.html#ae37d010c92c3afcf0da63834afc51469">CRC::Calculate</a></div><div class="ttdeci">static CRCType Calculate(const void *data, crcpp_size size, const Parameters&lt; CRCType, CRCWidth &gt; &amp;parameters)</div><div class="ttdoc">Computes a CRC.</div><div class="ttdef"><b>Definition</b> CRC.h:481</div></div>
+<div class="ttc" id="aclass_c_r_c_html_aea541af7b4c36708b8152476e8580053"><div class="ttname"><a href="class_c_r_c.html#aea541af7b4c36708b8152476e8580053">CRC::CRC_32</a></div><div class="ttdeci">static const Parameters&lt; crcpp_uint32, 32 &gt; &amp; CRC_32()</div><div class="ttdoc">Returns a set of parameters for CRC-32 (aka CRC-32 ADCCP, CRC-32 PKZip).</div><div class="ttdef"><b>Definition</b> CRC.h:1988</div></div>
 </div><!-- fragment --><p>Multi-part CRCs are also supported:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> ** argv)</div>
 <div class="line">{</div>
@@ -191,7 +191,7 @@ Usage</h2>
 <div class="line">    </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclass_c_r_c_html_a0d6d18a22d82d3aaed9de7c81a582ca6"><div class="ttname"><a href="class_c_r_c.html#a0d6d18a22d82d3aaed9de7c81a582ca6">CRC::CalculateBits</a></div><div class="ttdeci">static CRCType CalculateBits(const void *data, crcpp_size size, const Parameters&lt; CRCType, CRCWidth &gt; &amp;parameters)</div><div class="ttdoc">Computes a CRC.</div><div class="ttdef"><b>Definition</b> CRC.h:564</div></div>
+<div class="ttc" id="aclass_c_r_c_html_a0d6d18a22d82d3aaed9de7c81a582ca6"><div class="ttname"><a href="class_c_r_c.html#a0d6d18a22d82d3aaed9de7c81a582ca6">CRC::CalculateBits</a></div><div class="ttdeci">static CRCType CalculateBits(const void *data, crcpp_size size, const Parameters&lt; CRCType, CRCWidth &gt; &amp;parameters)</div><div class="ttdoc">Computes a CRC.</div><div class="ttdef"><b>Definition</b> CRC.h:568</div></div>
 </div><!-- fragment --><p>The above examples compute a <a class="el" href="class_c_r_c.html" title="Static class for computing CRCs.">CRC</a> bit-by-bit. However, CRC++ also supports lookup tables, as the following example demonstrates:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> ** argv)</div>
 <div class="line">{</div>
@@ -209,7 +209,7 @@ Usage</h2>
 <div class="line">    </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="astruct_c_r_c_1_1_table_html"><div class="ttname"><a href="struct_c_r_c_1_1_table.html">CRC::Table</a></div><div class="ttdoc">CRC lookup table. After construction, the CRC parameters are fixed.</div><div class="ttdef"><b>Definition</b> CRC.h:190</div></div>
+<div class="ttc" id="astruct_c_r_c_1_1_table_html"><div class="ttname"><a href="struct_c_r_c_1_1_table.html">CRC::Table</a></div><div class="ttdoc">CRC lookup table. After construction, the CRC parameters are fixed.</div><div class="ttdef"><b>Definition</b> CRC.h:194</div></div>
 </div><!-- fragment --><p>Or, if you prefer using the <code>auto</code> keyword:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> ** argv)</div>
 <div class="line">{</div>
@@ -246,7 +246,7 @@ Configuration</h2>
  Define to place all CRC++ code within the ::CRCPP namespace. Not defined by default.</li>
 <li><code>#define CRCPP_BRANCHLESS</code><br  />
  Define to enable a branchless <a class="el" href="class_c_r_c.html" title="Static class for computing CRCs.">CRC</a> implementation. The branchless implementation uses a single integer multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation may be faster on processor architectures which support single-instruction integer multiplication. Not defined by default.</li>
-<li><code>#define CRCPP_USE_CPP11</code> Define to enables C++11 features (move semantics, constexpr, static_assert, etc.). Not defined by default.</li>
+<li><code>#define CRCPP_USE_CPP11</code> Define to enables C++11 features (move semantics, constexpr, static_assert, etc.). Enabled by default when a C++11 compiler is detected (<code>__cplusplus &gt;= 201103L</code>).</li>
 <li><code>#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS</code> Define to include definitions for little-used CRCs. Not defined by default.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md5"></a>
