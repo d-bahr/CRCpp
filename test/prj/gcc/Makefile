@@ -18,7 +18,7 @@ $(TARGET): $(OBJ_FILES)
 	$(MKDIR) -p $(BINDIR)
 	$(LINKER) $(LDFLAGS) -o $@ $^
 
-$(OUTDIR)/%.o: $(SRCDIR)/%.cpp
+$(OUTDIR)/%.o: $(SRCDIR)/%.cpp $(INCDIR)/CRC.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(OUTDIR):

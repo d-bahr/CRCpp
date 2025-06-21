@@ -1,11 +1,11 @@
 /**
     @file CRC.h
     @author Daniel Bahr
-    @version 1.2.0.0
+    @version 1.2.1.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2022, Daniel Bahr
+        Copyright (c) 2022-2025, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,10 @@
 
 #ifndef CRCPP_CRC_H_
 #define CRCPP_CRC_H_
+
+#if __cplusplus >= 201103L && !defined(CRCPP_USE_CPP11)
+#define CRCPP_USE_CPP11
+#endif
 
 #include <climits>  // Includes CHAR_BIT
 #ifdef CRCPP_USE_CPP11
@@ -141,15 +145,15 @@ namespace CRCPP
 #ifdef CRCPP_USE_CPP11
 crcpp_constexpr int CRCPP_MAJOR_VERSION = 1;
 crcpp_constexpr int CRCPP_MINOR_VERSION = 2;
-crcpp_constexpr int CRCPP_PATCH_VERSION = 0;
+crcpp_constexpr int CRCPP_PATCH_VERSION = 1;
 crcpp_constexpr int CRCPP_REVISION_VERSION = 0;
-crcpp_constexpr char CRCPP_COPYRIGHT[] = "Copyright (c) 2022, Daniel Bahr";
+crcpp_constexpr char CRCPP_COPYRIGHT[] = "Copyright (c) 2022-2025, Daniel Bahr";
 #else
 #define CRCPP_MAJOR_VERSION 1
 #define CRCPP_MINOR_VERSION 2
-#define CRCPP_PATCH_VERSION 0
+#define CRCPP_PATCH_VERSION 1
 #define CRCPP_REVISION_VERSION 0
-#define CRCPP_COPYRIGHT "Copyright (c) 2022, Daniel Bahr"
+#define CRCPP_COPYRIGHT "Copyright (c) 2022-2025, Daniel Bahr"
 #endif
 
 /**

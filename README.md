@@ -162,7 +162,7 @@ Define to place all CRC++ code within the ::CRCPP namespace. Not defined by defa
 * `#define CRCPP_BRANCHLESS`<br>
 Define to enable a branchless CRC implementation. The branchless implementation uses a single integer multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation may be faster on processor architectures which support single-instruction integer multiplication. Not defined by default.
 * `#define CRCPP_USE_CPP11`
-Define to enables C++11 features (move semantics, constexpr, static_assert, etc.). Not defined by default.
+Define to enables C++11 features (move semantics, constexpr, static_assert, etc.). Enabled by default when a C++11 compiler is detected (`__cplusplus >= 201103L`).
 * `#define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS`
 Define to include definitions for little-used CRCs. Not defined by default.
 
