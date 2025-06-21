@@ -68,9 +68,14 @@ var searchData=
   ['crc_5f8_5fmaxim_65',['CRC_8_MAXIM',['../class_c_r_c.html#a6c60151d2fdf84de2e05865c7265b92e',1,'CRC']]],
   ['crc_5f8_5fwcdma_66',['CRC_8_WCDMA',['../class_c_r_c.html#a6ea5fbb9f6475e6401f1840c9d6df0aa',1,'CRC']]],
   ['crcpp_5fconstexpr_67',['crcpp_constexpr',['../_c_r_c_8h.html#ac53723d95b5c8c7d707e8e3ebcb4e143',1,'CRC.h']]],
-  ['crcpp_5fsize_68',['crcpp_size',['../_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6',1,'CRC.h']]],
-  ['crcpp_5fuint16_69',['crcpp_uint16',['../_c_r_c_8h.html#add273674b22f031b158220eeb560c7a0',1,'CRC.h']]],
-  ['crcpp_5fuint32_70',['crcpp_uint32',['../_c_r_c_8h.html#a4469d365469b254f21fb50316e079094',1,'CRC.h']]],
-  ['crcpp_5fuint64_71',['crcpp_uint64',['../_c_r_c_8h.html#a3541074ba795d31a40f13e78c77c0e7c',1,'CRC.h']]],
-  ['crcpp_5fuint8_72',['crcpp_uint8',['../_c_r_c_8h.html#a28cd0a17324a479874c3bdd5387d6b04',1,'CRC.h']]]
+  ['crcpp_5fcopyright_68',['CRCPP_COPYRIGHT',['../_c_r_c_8h.html#ab2d380f0d511cee0dc2e5006e028f1ac',1,'CRC.h']]],
+  ['crcpp_5fmajor_5fversion_69',['CRCPP_MAJOR_VERSION',['../_c_r_c_8h.html#a76d38bcb9c7ab9b42b37bcaaf50940e2',1,'CRC.h']]],
+  ['crcpp_5fminor_5fversion_70',['CRCPP_MINOR_VERSION',['../_c_r_c_8h.html#ab406bd0229345f28534e2f237adf36bf',1,'CRC.h']]],
+  ['crcpp_5fpatch_5fversion_71',['CRCPP_PATCH_VERSION',['../_c_r_c_8h.html#a1ffca41bb7346ad6af5387c25c5e4fe7',1,'CRC.h']]],
+  ['crcpp_5frevision_5fversion_72',['CRCPP_REVISION_VERSION',['../_c_r_c_8h.html#aee7dc13a552677000083c267fbd38e01',1,'CRC.h']]],
+  ['crcpp_5fsize_73',['crcpp_size',['../_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6',1,'CRC.h']]],
+  ['crcpp_5fuint16_74',['crcpp_uint16',['../_c_r_c_8h.html#add273674b22f031b158220eeb560c7a0',1,'CRC.h']]],
+  ['crcpp_5fuint32_75',['crcpp_uint32',['../_c_r_c_8h.html#a4469d365469b254f21fb50316e079094',1,'CRC.h']]],
+  ['crcpp_5fuint64_76',['crcpp_uint64',['../_c_r_c_8h.html#a3541074ba795d31a40f13e78c77c0e7c',1,'CRC.h']]],
+  ['crcpp_5fuint8_77',['crcpp_uint8',['../_c_r_c_8h.html#a28cd0a17324a479874c3bdd5387d6b04',1,'CRC.h']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['reflectinput_0',['reflectInput',['../struct_c_r_c_1_1_parameters.html#ac069bff622f62a8b6f158ed22fd67287',1,'CRC::Parameters']]],
-  ['reflectoutput_1',['reflectOutput',['../struct_c_r_c_1_1_parameters.html#ac92c0cd24ad04cbe7fe155f001381941',1,'CRC::Parameters']]]
+  ['parameters_0',['parameters',['../struct_c_r_c_1_1_table.html#af58a65824eab613688852f20f6a4dce2',1,'CRC::Table']]],
+  ['polynomial_1',['polynomial',['../struct_c_r_c_1_1_parameters.html#a7f03a44c0c18d54d873573c50d4de3e5',1,'CRC::Parameters']]]
 ];
