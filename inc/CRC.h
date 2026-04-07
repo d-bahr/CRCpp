@@ -258,6 +258,7 @@ public:
     static const Parameters< crcpp_uint8,  8> & CRC_8_MAXIM();
     static const Parameters< crcpp_uint8,  8> & CRC_8_WCDMA();
     static const Parameters< crcpp_uint8,  8> & CRC_8_LTE();
+    static const Parameters< crcpp_uint8,  8> & CRC_8_NRSC5();
     static const Parameters<crcpp_uint16, 10> & CRC_10();
     static const Parameters<crcpp_uint16, 10> & CRC_10_CDMA2000();
     static const Parameters<crcpp_uint16, 11> & CRC_11();
@@ -1310,6 +1311,24 @@ inline const CRC::Parameters<crcpp_uint8, 8> & CRC::CRC_8_WCDMA()
 inline const CRC::Parameters<crcpp_uint8, 8> & CRC::CRC_8_LTE()
 {
     static const Parameters<crcpp_uint8, 8> parameters = { 0x9B, 0x00, 0x00, false, false };
+    return parameters;
+}
+
+/**
+    @brief Returns a set of parameters for CRC-8 NRSC-5.
+    @note The parameters are static and are delayed-constructed to reduce memory footprint.
+    @note CRC-8 NRSC-5 has the following parameters and check value:
+        - polynomial     = 0x31
+        - initial value  = 0xFF
+        - final XOR      = 0x00
+        - reflect input  = false
+        - reflect output = false
+        - check value    = 0xF7
+    @return CRC-8 NRSC-5 parameters
+*/
+inline const CRC::Parameters< crcpp_uint8,  8> & CRC::CRC_8_NRSC5()
+{
+    static const Parameters<crcpp_uint8, 8> parameters = { 0x31, 0xFF, 0x00, false, false };
     return parameters;
 }
 
