@@ -1,7 +1,7 @@
 var class_c_r_c =
 [
-    [ "Parameters", "struct_c_r_c_1_1_parameters.html", "struct_c_r_c_1_1_parameters" ],
     [ "Table", "struct_c_r_c_1_1_table.html", "struct_c_r_c_1_1_table" ],
+    [ "Parameters", "struct_c_r_c_1_1_parameters.html", "struct_c_r_c_1_1_parameters" ],
     [ "CRC", "class_c_r_c.html#ae3b619261d432ee65fd4811b1d6873d9", null ],
     [ "CRC", "class_c_r_c.html#a0e21ad089283e12d62a65dd00eeb3b0d", null ],
     [ "CRC", "class_c_r_c.html#aec6d4f371a0fc7f669a0bc371efae916", null ],
@@ -74,6 +74,7 @@ var class_c_r_c =
     [ "CRC_8_HDLC", "class_c_r_c.html#a6e1360b675e2dd18bfc8b27f5ec83de9", null ],
     [ "CRC_8_LTE", "class_c_r_c.html#adfd7b0450be56dcc7f520bd74def9be2", null ],
     [ "CRC_8_MAXIM", "class_c_r_c.html#a6c60151d2fdf84de2e05865c7265b92e", null ],
+    [ "CRC_8_NRSC5", "class_c_r_c.html#ae246ed27271c8db7a9c3dcb522d87632", null ],
     [ "CRC_8_WCDMA", "class_c_r_c.html#a6ea5fbb9f6475e6401f1840c9d6df0aa", null ],
     [ "Finalize", "class_c_r_c.html#af3247bcac33c4422cbbd97d0eddb1fe6", null ],
     [ "operator=", "class_c_r_c.html#a2a2143ed5230e5af95d7f20867b6f1b5", null ],
