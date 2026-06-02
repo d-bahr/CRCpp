@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 3.5)
 
-project(CRCpp)
+project(CRCpp VERSION 1.2.1.0)
+
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
 
 # Build type
 if (NOT CMAKE_BUILD_TYPE)
@@ -19,8 +22,31 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
+# pkg-config configuration file
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CRCpp.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CRCpp.pc
+    @ONLY)
+
+# CMake configuration files
+configure_package_config_file(
+    cmake/CRCppConfig.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/CRCppConfig.cmake"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/crcpp")
+write_basic_package_version_file(CRCppConfigVersion.cmake
+                                 VERSION ${PACKAGE_VERSION}
+                                 COMPATIBILITY SameMajorVersion
+                                 ARCH_INDEPENDENT)
+
 # Installation
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/inc/ DESTINATION include)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/inc/ DESTINATION ${CMAKE_INSTALL_INCLUDE_DIR})
+install(FILES
+          ${CMAKE_CURRENT_BINARY_DIR}/CRCpp.pc
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
+install(FILES
+	  ${CMAKE_CURRENT_BINARY_DIR}/CRCppConfig.cmake
+	  ${CMAKE_CURRENT_BINARY_DIR}/CRCppConfigVersion.cmake
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/crcpp)
 
 # Documentation
 if (BUILD_DOC)

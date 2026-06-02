@@ -1,0 +1,8 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: @PROJECT_NAME@
+Description: Easy to use and fast C++ CRC library.
+Version: @PROJECT_VERSION@
+Cflags: -I${includedir}
