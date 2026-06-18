@@ -1,11 +1,11 @@
 /**
     @file CRC.h
     @author Daniel Bahr
-    @version 1.2.1.0
+    @version 1.2.2.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2022-2025, Daniel Bahr
+        Copyright (c) 2022-2026, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -145,15 +145,15 @@ namespace CRCPP
 #ifdef CRCPP_USE_CPP11
 crcpp_constexpr int CRCPP_MAJOR_VERSION = 1;
 crcpp_constexpr int CRCPP_MINOR_VERSION = 2;
-crcpp_constexpr int CRCPP_PATCH_VERSION = 1;
+crcpp_constexpr int CRCPP_PATCH_VERSION = 2;
 crcpp_constexpr int CRCPP_REVISION_VERSION = 0;
-crcpp_constexpr char CRCPP_COPYRIGHT[] = "Copyright (c) 2022-2025, Daniel Bahr";
+crcpp_constexpr char CRCPP_COPYRIGHT[] = "Copyright (c) 2022-2026, Daniel Bahr";
 #else
 #define CRCPP_MAJOR_VERSION 1
 #define CRCPP_MINOR_VERSION 2
-#define CRCPP_PATCH_VERSION 1
+#define CRCPP_PATCH_VERSION 2
 #define CRCPP_REVISION_VERSION 0
-#define CRCPP_COPYRIGHT "Copyright (c) 2022-2025, Daniel Bahr"
+#define CRCPP_COPYRIGHT "Copyright (c) 2022-2026, Daniel Bahr"
 #endif
 
 /**
@@ -481,7 +481,8 @@ inline void CRC::Table<CRCType, CRCWidth>::InitTable()
 template <typename CRCType, crcpp_uint16 CRCWidth>
 inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Parameters<CRCType, CRCWidth> & parameters)
 {
-    CRCType remainder = CalculateRemainder(data, size, parameters, parameters.initialValue);
+    CRCType initialValue = parameters.reflectInput ? Reflect(parameters.initialValue, CRCWidth) : parameters.initialValue;
+    CRCType remainder = CalculateRemainder(data, size, parameters, initialValue);
 
     // No need to mask the remainder here; the mask will be applied in the Finalize() function.
 
@@ -524,7 +525,8 @@ inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Table<CR
 {
     const Parameters<CRCType, CRCWidth> & parameters = lookupTable.GetParameters();
 
-    CRCType remainder = CalculateRemainder(data, size, lookupTable, parameters.initialValue);
+    CRCType initialValue = parameters.reflectInput ? Reflect(parameters.initialValue, CRCWidth) : parameters.initialValue;
+    CRCType remainder = CalculateRemainder(data, size, lookupTable, initialValue);
 
     // No need to mask the remainder here; the mask will be applied in the Finalize() function.
 
