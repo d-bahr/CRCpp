@@ -1,11 +1,11 @@
 /**
     @file main.cpp
     @author Daniel Bahr
-    @version 1.2.1.0
+    @version 1.2.2.0
     @copyright
     @parblock
         CRC++
-        Copyright (c) 2022-2025, Daniel Bahr
+        Copyright (c) 2022-2026, Daniel Bahr
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -184,6 +184,25 @@ static void PartialCRCTableTest(const char * data, size_t size, const CRC::Param
 }
 
 /**
+    @brief Computes a bit-by-bit test and table CRC test.
+    @param[in] data Data over which CRC will be computed
+    @param[in] size Size of the data, in bytes
+    @param[in] parameters CRC parameters
+    @param[in] expectedCRC Expected CRC of the data, used for comparison
+    @param[in] crcName Human-readable name of the CRC algorithm used.
+    @tparam CRCType Integer type for storing the CRC result
+    @tparam CRCWidth Number of bits in the CRC
+*/
+template <typename CRCType, uint16_t CRCWidth>
+static void CRCTest(const char * data, size_t size, const CRC::Parameters<CRCType, CRCWidth> & parameters, CRCType expectedCRC, const std::string & crcName)
+{
+    CRCBitByBitTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+    PartialCRCBitByBitTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+    CRCTableTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+    PartialCRCTableTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+}
+
+/**
     @brief Partial CRC table test function. Calculates a CRC in two parts over some specified data and compares the calculated CRC to an expected CRC.
     @param[in] data Data over which CRC will be computed
     @param[in] size Size of the data, in bits
@@ -222,21 +241,6 @@ static void CRCTableNon8BitTest(const unsigned char * data, size_t size, const C
 }
 
 /**
-    @brief Computes a bit-by-bit test and table CRC test.
-    @param[in] data Data over which CRC will be computed
-    @param[in] size Size of the data, in bytes
-    @param[in] parameters CRC parameters
-    @param[in] expectedCRC Expected CRC of the data, used for comparison
-    @tparam CRCType Integer type for storing the CRC result
-    @tparam CRCWidth Number of bits in the CRC
-*/
-#define CRC_TEST(data, size, parameters, expectedCRC) \
-    CRCBitByBitTest(       data, size, parameters(), expectedCRC, #parameters); \
-    PartialCRCBitByBitTest(data, size, parameters(), expectedCRC, #parameters); \
-    CRCTableTest(          data, size, parameters(), expectedCRC, #parameters); \
-    PartialCRCTableTest(   data, size, parameters(), expectedCRC, #parameters)
-
-/**
     @brief Computes a bit-by-bit test and table CRC test with a non-8-bit multiple input size.
     @param[in] data Data over which CRC will be computed
     @param[in] size Size of the data, in bits
@@ -245,9 +249,12 @@ static void CRCTableNon8BitTest(const unsigned char * data, size_t size, const C
     @tparam CRCType Integer type for storing the CRC result
     @tparam CRCWidth Number of bits in the CRC
 */
-#define CRC_PARTIAL_BYTE_TEST(data, size, parameters, expectedCRC) \
-    CRCBitByBitNon8BitTest(data, size, parameters(), expectedCRC, #parameters); \
-    CRCTableNon8BitTest(   data, size, parameters(), expectedCRC, #parameters);
+template <typename CRCType, uint16_t CRCWidth>
+static void CRCPartialByteTest(const unsigned char * data, size_t size, const CRC::Parameters<CRCType, CRCWidth> & parameters, CRCType expectedCRC, const std::string & crcName)
+{
+    CRCBitByBitNon8BitTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+    CRCTableNon8BitTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+}
 
 /**
     @brief Unit test entry point.
@@ -265,78 +272,78 @@ int main(int argc, char ** argv)
     (void)argv;
 
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_4_ITU,         uint8_t(0x7));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_EPC,         uint8_t(0x00));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_ITU,         uint8_t(0x07));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_USB,         uint8_t(0x19));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_CDMA2000A,   uint8_t(0x0D));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_CDMA2000B,   uint8_t(0x3B));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_ITU,         uint8_t(0x06));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_NR,          uint8_t(0x15));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_7,             uint8_t(0x75));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_4_ITU(),         uint8_t(0x7),                 "CRC_4_ITU");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_EPC(),         uint8_t(0x00),                "CRC_5_EPC");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_ITU(),         uint8_t(0x07),                "CRC_5_ITU");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_5_USB(),         uint8_t(0x19),                "CRC_5_USB");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_CDMA2000A(),   uint8_t(0x0D),                "CRC_6_CDMA2000A");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_CDMA2000B(),   uint8_t(0x3B),                "CRC_6_CDMA2000B");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_ITU(),         uint8_t(0x06),                "CRC_6_ITU");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_6_NR(),          uint8_t(0x15),                "CRC_6_NR");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_7(),             uint8_t(0x75),                "CRC_7");
 #endif
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8,             uint8_t(0xF4));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8(),             uint8_t(0xF4),                "CRC_8");
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_EBU,         uint8_t(0x97));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_HDLC,        uint8_t(0x2F));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_MAXIM,       uint8_t(0xA1));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_WCDMA,       uint8_t(0x25));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_LTE,         uint8_t(0xEA));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_NRSC5,       uint8_t(0xF7));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_10,            uint16_t(0x199));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_10_CDMA2000,   uint16_t(0x233));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_11,            uint16_t(0x5A3));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_11_NR,         uint16_t(0x5CA));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_12_UMTS,       uint16_t(0xDAF));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_12_CDMA2000,   uint16_t(0xD4D));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_12_DECT,       uint16_t(0xF5B));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_13_BBC,        uint16_t(0x04FA));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_15,            uint16_t(0x059E));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_15_MPT1327,    uint16_t(0x2566));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_EBU(),         uint8_t(0x97),                "CRC_8_EBU");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_HDLC(),        uint8_t(0x2F),                "CRC_8_HDLC");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_MAXIM(),       uint8_t(0xA1),                "CRC_8_MAXIM");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_WCDMA(),       uint8_t(0x25),                "CRC_8_WCDMA");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_LTE(),         uint8_t(0xEA),                "CRC_8_LTE");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_8_NRSC5(),       uint8_t(0xF7),                "CRC_8_NRSC5");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_10(),            uint16_t(0x199),              "CRC_10");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_10_CDMA2000(),   uint16_t(0x233),              "CRC_10_CDMA2000");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_11(),            uint16_t(0x5A3),              "CRC_11");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_11_NR(),         uint16_t(0x5CA),              "CRC_11_NR");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_12_UMTS(),       uint16_t(0xDAF),              "CRC_12_UMTS");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_12_CDMA2000(),   uint16_t(0xD4D),              "CRC_12_CDMA2000");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_12_DECT(),       uint16_t(0xF5B),              "CRC_12_DECT");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_13_BBC(),        uint16_t(0x04FA),             "CRC_13_BBC");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_15(),            uint16_t(0x059E),             "CRC_15");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_15_MPT1327(),    uint16_t(0x2566),             "CRC_15_MPT1327");
 #endif
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_ARC,        uint16_t(0xBB3D));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_BUYPASS,    uint16_t(0xFEE8));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CCITTFALSE, uint16_t(0x29B1));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MCRF4XX,    uint16_t(0x6F91));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_ARC(),        uint16_t(0xBB3D),             "CRC_16_ARC");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_BUYPASS(),    uint16_t(0xFEE8),             "CRC_16_BUYPASS");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CCITTFALSE(), uint16_t(0x29B1),             "CRC_16_CCITTFALSE");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MCRF4XX(),    uint16_t(0x6F91),             "CRC_16_MCRF4XX");
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CDMA2000,   uint16_t(0x4C06));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CMS,        uint16_t(0xAEE7));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DECTR,      uint16_t(0x007E));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DECTX,      uint16_t(0x007F));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DNP,        uint16_t(0xEA82));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CDMA2000(),   uint16_t(0x4C06),             "CRC_16_CDMA2000");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_CMS(),        uint16_t(0xAEE7),             "CRC_16_CMS");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DECTR(),      uint16_t(0x007E),             "CRC_16_DECTR");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DECTX(),      uint16_t(0x007F),             "CRC_16_DECTX");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_DNP(),        uint16_t(0xEA82),             "CRC_16_DNP");
 #endif
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_GENIBUS,    uint16_t(0xD64E));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_KERMIT,     uint16_t(0x2189));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_GENIBUS(),    uint16_t(0xD64E),             "CRC_16_GENIBUS");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_KERMIT(),     uint16_t(0x2189),             "CRC_16_KERMIT");
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MAXIM,      uint16_t(0x44C2));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MODBUS,     uint16_t(0x4B37));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_T10DIF,     uint16_t(0xD0DB));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_USB,        uint16_t(0xB4C8));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MAXIM(),      uint16_t(0x44C2),             "CRC_16_MAXIM");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_MODBUS(),     uint16_t(0x4B37),             "CRC_16_MODBUS");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_T10DIF(),     uint16_t(0xD0DB),             "CRC_16_T10DIF");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_USB(),        uint16_t(0xB4C8),             "CRC_16_USB");
 #endif
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_X25,        uint16_t(0x906E));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_XMODEM,     uint16_t(0x31C3));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_X25(),        uint16_t(0x906E),             "CRC_16_X25");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_16_XMODEM(),     uint16_t(0x31C3),             "CRC_16_XMODEM");
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_17_CAN,        uint32_t(0x04F03));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_21_CAN,        uint32_t(0x0ED841));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24,            uint32_t(0x21CF02));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_FLEXRAYA,   uint32_t(0x7979BD));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_FLEXRAYB,   uint32_t(0x1F23B8));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_LTEA,       uint32_t(0xCDE703));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_LTEB,       uint32_t(0x23EF52));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_NRC,        uint32_t(0xF48279));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_30,            uint32_t(0x3B3CB540));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_17_CAN(),        uint32_t(0x04F03),            "CRC_17_CAN");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_21_CAN(),        uint32_t(0x0ED841),           "CRC_21_CAN");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24(),            uint32_t(0x21CF02),           "CRC_24");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_FLEXRAYA(),   uint32_t(0x7979BD),           "CRC_24_FLEXRAYA");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_FLEXRAYB(),   uint32_t(0x1F23B8),           "CRC_24_FLEXRAYB");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_LTEA(),       uint32_t(0xCDE703),           "CRC_24_LTEA");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_LTEB(),       uint32_t(0x23EF52),           "CRC_24_LTEB");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_NRC(),        uint32_t(0xF48279),           "CRC_24_NRC");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_30(),            uint32_t(0x3B3CB540),         "CRC_30");
 #endif
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32,            uint32_t(0xCBF43926));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_BZIP2,      uint32_t(0xFC891918));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32(),            uint32_t(0xCBF43926),         "CRC_32");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_BZIP2(),      uint32_t(0xFC891918),         "CRC_32_BZIP2");
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_C,          uint32_t(0xE3069283));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_C(),          uint32_t(0xE3069283),         "CRC_32_C");
 #endif
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_MPEG2,      uint32_t(0x0376E6E7));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_POSIX,      uint32_t(0x765E7680));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_MPEG2(),      uint32_t(0x0376E6E7),         "CRC_32_MPEG2");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_POSIX(),      uint32_t(0x765E7680),         "CRC_32_POSIX");
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_Q,          uint32_t(0x3010BF7F));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_40_GSM,        uint64_t(0xD4164FC646));
-    CRC_TEST(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_64,            uint64_t(0x6C40DF5F0B497347));
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_Q(),          uint32_t(0x3010BF7F),         "CRC_32_Q");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_40_GSM(),        uint64_t(0xD4164FC646),       "CRC_40_GSM");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_64(),            uint64_t(0x6C40DF5F0B497347), "CRC_64");
 #endif
 
 #ifdef CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
@@ -345,13 +352,43 @@ int main(int argc, char ** argv)
     // USB 2.0 uses 5-bit CRCs on 11 bits of data. Check one such example
     // found in the USB specification.
     static const unsigned char CRC_5_USB_TEST_DATA[] = { 0x10, 0x07 };
-    CRC_PARTIAL_BYTE_TEST(CRC_5_USB_TEST_DATA, 11, CRC::CRC_5_USB, uint8_t(0x05));
+    CRCPartialByteTest(CRC_5_USB_TEST_DATA, 11, CRC::CRC_5_USB(), uint8_t(0x05), "CRC_5_USB");
 
     // Test 13-bit inputs used in 5G-NR
     static const unsigned char CRC_NR_TEST_DATA[] = { 0xBD, 0x10 };
-    CRC_PARTIAL_BYTE_TEST(CRC_NR_TEST_DATA, 13, CRC::CRC_6_NR,  uint8_t(0x2F));
-    CRC_PARTIAL_BYTE_TEST(CRC_NR_TEST_DATA, 13, CRC::CRC_11_NR, uint16_t(0x06C8));
+    CRCPartialByteTest(CRC_NR_TEST_DATA, 13, CRC::CRC_6_NR(), uint8_t(0x2F), "CRC_6_NR");
+    CRCPartialByteTest(CRC_NR_TEST_DATA, 13, CRC::CRC_11_NR(), uint16_t(0x06C8), "CRC_11_NR");
 #endif
+
+    // Additional tests for CRCs with non-palindromic initial values.
+    // These are typically non-standard CRCs, and so the expected values are manually calculated.
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint32, 32>{ 0x04C11DB7, 0xAB0477, 0x01234567, false, false }, uint32_t(0xE05EBCAD), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint32, 32>{ 0x04C11DB7, 0xAB0477, 0x01234567, true,  false }, uint32_t(0x784B8A66), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint32, 32>{ 0x04C11DB7, 0xAB0477, 0x01234567, false, true  }, uint32_t(0x52BCFBE0), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint32, 32>{ 0x04C11DB7, 0xAB0477, 0x01234567, true,  true  }, uint32_t(0x81D053F9), "Custom");
+
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 16>{ 0xDEAD, 0xBEEF, 0xCAFE, false, false }, uint16_t(0xE0AA), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 16>{ 0xDEAD, 0xBEEF, 0xCAFE, true,  false }, uint16_t(0xBBE9), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 16>{ 0xDEAD, 0xBEEF, 0xCAFE, false, true  }, uint16_t(0xE0AA), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 16>{ 0xDEAD, 0xBEEF, 0xCAFE, true,  true  }, uint16_t(0x2270), "Custom");
+
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 14>{ 0x1EAD, 0x3EEF, 0x0AFE, false, false }, uint16_t(0x30D8), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 14>{ 0x1EAD, 0x3EEF, 0x0AFE, true,  false }, uint16_t(0x01D6), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 14>{ 0x1EAD, 0x3EEF, 0x0AFE, false, true  }, uint16_t(0x13E9), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint16, 14>{ 0x1EAD, 0x3EEF, 0x0AFE, true,  true  }, uint16_t(0x0FCA), "Custom");
+
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint64, 43>{ 0xABCDABCDAB, 0x1F082BE81CC, 0x1, false, false }, uint64_t(0x1037D2C94B4), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint64, 43>{ 0xABCDABCDAB, 0x1F082BE81CC, 0x1, true, false  }, uint64_t(0x1EB63445B45), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint64, 43>{ 0xABCDABCDAB, 0x1F082BE81CC, 0x1, false, true  }, uint64_t(0x56949A5F605), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint64, 43>{ 0xABCDABCDAB, 0x1F082BE81CC, 0x1, true, true   }, uint64_t(0x116D11636BD), "Custom");
+
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint8, 3>{ 0x5, 0x2, 0x6, false, false }, uint8_t(0x2), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint8, 3>{ 0x5, 0x2, 0x6, true, false  }, uint8_t(0x3), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint8, 3>{ 0x5, 0x2, 0x6, false, true  }, uint8_t(0x7), "Custom");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::Parameters<crcpp_uint8, 3>{ 0x5, 0x2, 0x6, true, true   }, uint8_t(0x3), "Custom");
+
+    // Test case initially reported in issue #23.
+    CRCTest("1234567890abcdefgh", 18, CRC::Parameters<crcpp_uint32, 32>{0x04C11DB7, 0xFFFF11, 0x0, true, true}, uint32_t(0x705C9E6F), "PR #23");
 
     return returnCode;
 }
