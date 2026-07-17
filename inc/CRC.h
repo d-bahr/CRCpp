@@ -612,7 +612,7 @@ inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Para
     crcpp_size wholeNumberOfBytes = size / CHAR_BIT;
     if (wholeNumberOfBytes > 0)
     {
-        remainder = CalculateRemainder(data, wholeNumberOfBytes, parameters, parameters.initialValue);
+        remainder = CalculateRemainder(data, wholeNumberOfBytes, parameters, remainder);
     }
 
     crcpp_size remainingNumberOfBits = size % CHAR_BIT;
@@ -686,7 +686,7 @@ inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Tabl
     crcpp_size wholeNumberOfBytes = size / CHAR_BIT;
     if (wholeNumberOfBytes > 0)
     {
-        remainder = CalculateRemainder(data, wholeNumberOfBytes, lookupTable, parameters.initialValue);
+        remainder = CalculateRemainder(data, wholeNumberOfBytes, lookupTable, remainder);
     }
 
     crcpp_size remainingNumberOfBits = size % CHAR_BIT;
