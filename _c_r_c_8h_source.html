@@ -601,7 +601,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_c_r_c_8h_sour
 <div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>    <a class="code hl_define" href="_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6">crcpp_size</a> wholeNumberOfBytes = size / CHAR_BIT;</div>
 <div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>    <span class="keywordflow">if</span> (wholeNumberOfBytes &gt; 0)</div>
 <div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>    {</div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>        remainder = <a class="code hl_function" href="class_c_r_c.html#a78e9e8d7f86f3acfd6cc8b446a305b99">CalculateRemainder</a>(data, wholeNumberOfBytes, parameters, parameters.<a class="code hl_variable" href="struct_c_r_c_1_1_parameters.html#a3438fb5c479f36e4c8df90cd1e143287">initialValue</a>);</div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>        remainder = <a class="code hl_function" href="class_c_r_c.html#a78e9e8d7f86f3acfd6cc8b446a305b99">CalculateRemainder</a>(data, wholeNumberOfBytes, parameters, remainder);</div>
 <div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>    }</div>
 <div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span> </div>
 <div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>    <a class="code hl_define" href="_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6">crcpp_size</a> remainingNumberOfBits = size % CHAR_BIT;</div>
@@ -659,7 +659,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_c_r_c_8h_sour
 <div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>    <a class="code hl_define" href="_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6">crcpp_size</a> wholeNumberOfBytes = size / CHAR_BIT;</div>
 <div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>    <span class="keywordflow">if</span> (wholeNumberOfBytes &gt; 0)</div>
 <div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>    {</div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>        remainder = <a class="code hl_function" href="class_c_r_c.html#a78e9e8d7f86f3acfd6cc8b446a305b99">CalculateRemainder</a>(data, wholeNumberOfBytes, lookupTable, parameters.<a class="code hl_variable" href="struct_c_r_c_1_1_parameters.html#a3438fb5c479f36e4c8df90cd1e143287">initialValue</a>);</div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>        remainder = <a class="code hl_function" href="class_c_r_c.html#a78e9e8d7f86f3acfd6cc8b446a305b99">CalculateRemainder</a>(data, wholeNumberOfBytes, lookupTable, remainder);</div>
 <div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>    }</div>
 <div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span> </div>
 <div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>    <a class="code hl_define" href="_c_r_c_8h.html#af44cfa9e71356f05c42b363cf04ea9a6">crcpp_size</a> remainingNumberOfBits = size % CHAR_BIT;</div>
