@@ -39,7 +39,7 @@ write_basic_package_version_file(CRCppConfigVersion.cmake
                                  ARCH_INDEPENDENT)
 
 # Installation
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/inc/ DESTINATION ${CMAKE_INSTALL_INCLUDE_DIR})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/inc/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES
           ${CMAKE_CURRENT_BINARY_DIR}/CRCpp.pc
         DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
