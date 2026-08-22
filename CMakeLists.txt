@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.5)
 
-project(CRCpp VERSION 1.2.1.0)
+project(CRCpp VERSION 1.2.3.0)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
