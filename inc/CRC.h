@@ -1,7 +1,7 @@
 /**
     @file CRC.h
     @author Daniel Bahr
-    @version 1.2.2.0
+    @version 1.2.3.0
     @copyright
     @parblock
         CRC++
@@ -145,13 +145,13 @@ namespace CRCPP
 #ifdef CRCPP_USE_CPP11
 crcpp_constexpr int CRCPP_MAJOR_VERSION = 1;
 crcpp_constexpr int CRCPP_MINOR_VERSION = 2;
-crcpp_constexpr int CRCPP_PATCH_VERSION = 2;
+crcpp_constexpr int CRCPP_PATCH_VERSION = 3;
 crcpp_constexpr int CRCPP_REVISION_VERSION = 0;
 crcpp_constexpr char CRCPP_COPYRIGHT[] = "Copyright (c) 2022-2026, Daniel Bahr";
 #else
 #define CRCPP_MAJOR_VERSION 1
 #define CRCPP_MINOR_VERSION 2
-#define CRCPP_PATCH_VERSION 2
+#define CRCPP_PATCH_VERSION 3
 #define CRCPP_REVISION_VERSION 0
 #define CRCPP_COPYRIGHT "Copyright (c) 2022-2026, Daniel Bahr"
 #endif
