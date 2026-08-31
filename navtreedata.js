@@ -58,6 +58,5 @@ var NAVTREEINDEX =
 "_c_r_c_8h.html"
 ];
 
-const SYNCONMSG = 'click to disable panel synchronization';
-const SYNCOFFMSG = 'click to enable panel synchronization';
-const LISTOFALLMEMBERS = 'List of all members';
+var SYNCONMSG = 'click to disable panel synchronisation';
+var SYNCOFFMSG = 'click to enable panel synchronisation';

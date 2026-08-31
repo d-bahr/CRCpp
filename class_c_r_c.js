@@ -1,7 +1,7 @@
 var class_c_r_c =
 [
-    [ "Table", "struct_c_r_c_1_1_table.html", "struct_c_r_c_1_1_table" ],
     [ "Parameters", "struct_c_r_c_1_1_parameters.html", "struct_c_r_c_1_1_parameters" ],
+    [ "Table", "struct_c_r_c_1_1_table.html", "struct_c_r_c_1_1_table" ],
     [ "CRC", "class_c_r_c.html#ae3b619261d432ee65fd4811b1d6873d9", null ],
     [ "CRC", "class_c_r_c.html#a0e21ad089283e12d62a65dd00eeb3b0d", null ],
     [ "CRC", "class_c_r_c.html#aec6d4f371a0fc7f669a0bc371efae916", null ],
