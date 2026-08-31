@@ -73,15 +73,7 @@ endif()
 
 # Documentation
 if(BUILD_DOC)
-    find_package(Doxygen)
-    if(DOXYGEN_FOUND)
-        add_custom_target(doxygen
-                          COMMAND "${DOXYGEN_EXECUTABLE}" Doxyfile.dox
-                          WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/doxygen"
-                          VERBATIM)
-    else()
-        message(WARNING "Doxygen must be installed to generate documentation")
-    endif()
+    add_subdirectory(doxygen)
 endif()
 
 # Unit tests
