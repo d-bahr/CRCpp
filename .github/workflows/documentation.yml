@@ -11,14 +11,17 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - name: Create
+    - name: Run CMake
+      run: cmake -B build -DBUILD_DOC=ON
+
+    - name: Create Documentation
       uses: mattnotmitt/doxygen-action@v1.12.0
       with:
-        doxyfile-path: "Doxyfile.dox"
-        working-directory: "doxygen"
+        doxyfile-path: "Doxyfile.doxygen-doc"
+        working-directory: "build/doxygen"
 
-    - name: Deploy
+    - name: Publish Documentation
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: doxygen/html
+        publish_dir: build/doxygen/html
