@@ -172,11 +172,13 @@ CRC does not require a build for basic usage; simply include the header file in 
 
 Unit tests and documentation can be built manually with the project files provided or automatically with CMake.
 
-To build documentation manually:
+To build documentation with CMake (requires [Doxygen](https://www.doxygen.nl/index.html)):
 ```bash
-cd doxygen
-doxygen Doxyfile.dox
+cmake -S . -B build -DBUILD_DOC=ON
+cmake --build build --target doxygen-doc
 ```
+
+The generated HTML documentation is in `build/doxygen/html`.
 
 To build unit tests manually via Make:
 ```bash
@@ -197,7 +199,7 @@ cmake .. [-DBUILD_DOC=ON]
 # Build and run unit tests
 make tests
 # Build documentation
-make doxygen
+make doxygen-doc
 # Install header file
 sudo make install
 ```
