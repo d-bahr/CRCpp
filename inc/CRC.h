@@ -570,7 +570,7 @@ inline CRCType CRC::Calculate(const void * data, crcpp_size size, const Table<CR
 template <typename CRCType, crcpp_uint16 CRCWidth>
 inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Parameters<CRCType, CRCWidth> & parameters)
 {
-    CRCType remainder = parameters.initialValue;
+    CRCType remainder = parameters.reflectInput ? Reflect(parameters.initialValue, CRCWidth) : parameters.initialValue;
 
     // Calculate the remainder on a whole number of bytes first, then call
     // a special-case function for the remaining bits.
@@ -641,7 +641,7 @@ inline CRCType CRC::CalculateBits(const void * data, crcpp_size size, const Tabl
 {
     const Parameters<CRCType, CRCWidth> & parameters = lookupTable.GetParameters();
 
-    CRCType remainder = parameters.initialValue;
+    CRCType remainder = parameters.reflectInput ? Reflect(parameters.initialValue, CRCWidth) : parameters.initialValue;
 
     // Calculate the remainder on a whole number of bytes first, then call
     // a special-case function for the remaining bits.

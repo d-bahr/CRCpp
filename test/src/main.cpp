@@ -200,6 +200,21 @@ static void CRCTest(const char * data, size_t size, const CRC::Parameters<CRCTyp
     PartialCRCBitByBitTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
     CRCTableTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
     PartialCRCTableTest<CRCType, CRCWidth>(data, size, parameters, expectedCRC, crcName);
+
+    // Whole-byte input must give the same result through the bit-count API,
+    // including when a finalized CRC is passed to a continuation overload.
+    CRC::Table<CRCType, CRCWidth> crcTable(parameters);
+    CRCType computedCRC = CRC::CalculateBits(data, size * CHAR_BIT, parameters);
+    PrintResult(data, size, parameters, expectedCRC, computedCRC, crcName, true);
+    computedCRC = CRC::CalculateBits(data, size * CHAR_BIT, crcTable);
+    PrintResult(data, size, parameters, expectedCRC, computedCRC, crcName, true);
+
+    computedCRC = CRC::CalculateBits(data, (size / 2) * CHAR_BIT, parameters);
+    computedCRC = CRC::CalculateBits(data + size / 2, ((size + 1) / 2) * CHAR_BIT, parameters, computedCRC);
+    PrintResult(data, size, parameters, expectedCRC, computedCRC, crcName, true);
+    computedCRC = CRC::CalculateBits(data, (size / 2) * CHAR_BIT, crcTable);
+    computedCRC = CRC::CalculateBits(data + size / 2, ((size + 1) / 2) * CHAR_BIT, crcTable, computedCRC);
+    PrintResult(data, size, parameters, expectedCRC, computedCRC, crcName, true);
 }
 
 /**
@@ -389,6 +404,14 @@ int main(int argc, char ** argv)
 
     // Test case initially reported in issue #23.
     CRCTest("1234567890abcdefgh", 18, CRC::Parameters<crcpp_uint32, 32>{0x04C11DB7, 0xFFFF11, 0x0, true, true}, uint32_t(0x705C9E6F), "PR #23");
+
+    // Non-byte-aligned input with a non-palindromic initial value.
+    // Unused high bits in the last byte are zero for reflected input.
+    static const unsigned char CRC_REFLECTED_TEST_DATA[] = { 0x98, 0x16 };
+    const CRC::Parameters<crcpp_uint32, 32> reflectedParameters = { 0x04C11DB7, 0xAB0477, 0x01234567, true, false };
+    const CRC::Parameters<crcpp_uint32, 32> reflectedOutputParameters = { 0x04C11DB7, 0xAB0477, 0x01234567, true, true };
+    CRCPartialByteTest(CRC_REFLECTED_TEST_DATA, 13, reflectedParameters, uint32_t(0xE17C7A9C), "Custom reflected input");
+    CRCPartialByteTest(CRC_REFLECTED_TEST_DATA, 13, reflectedOutputParameters, uint32_t(0xDEDFBF60), "Custom reflected input and output");
 
     return returnCode;
 }
