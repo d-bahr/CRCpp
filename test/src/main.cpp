@@ -346,7 +346,7 @@ int main(int argc, char ** argv)
     CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_LTEA(),       uint32_t(0xCDE703),           "CRC_24_LTEA");
     CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_LTEB(),       uint32_t(0x23EF52),           "CRC_24_LTEB");
     CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_24_NRC(),        uint32_t(0xF48279),           "CRC_24_NRC");
-    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_30(),            uint32_t(0x3B3CB540),         "CRC_30");
+    CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_30(),            uint32_t(0x04C34ABF),         "CRC_30");
 #endif
     CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32(),            uint32_t(0xCBF43926),         "CRC_32");
     CRCTest(CRC_CHECK_DATA, CRC_CHECK_SIZE, CRC::CRC_32_BZIP2(),      uint32_t(0xFC891918),         "CRC_32_BZIP2");
