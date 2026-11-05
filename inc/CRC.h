@@ -1981,15 +1981,15 @@ inline const CRC::Parameters<crcpp_uint32, 24> & CRC::CRC_24_NRC()
     @note CRC-30 CDMA has the following parameters and check value:
         - polynomial     = 0x2030B9C7
         - initial value  = 0x3FFFFFFF
-        - final XOR      = 0x00000000
+        - final XOR      = 0x3FFFFFFF
         - reflect input  = false
         - reflect output = false
-        - check value    = 0x3B3CB540
+        - check value    = 0x04C34ABF
     @return CRC-30 CDMA parameters
 */
 inline const CRC::Parameters<crcpp_uint32, 30> & CRC::CRC_30()
 {
-    static const Parameters<crcpp_uint32, 30> parameters = { 0x2030B9C7, 0x3FFFFFFF, 0x00000000, false, false };
+    static const Parameters<crcpp_uint32, 30> parameters = { 0x2030B9C7, 0x3FFFFFFF, 0x3FFFFFFF, false, false };
     return parameters;
 }
 #endif // CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
